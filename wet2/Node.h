@@ -23,16 +23,24 @@ public:
     Node(Node<T, Key> *left, Node<T, Key> *right, Node<T, Key> *father,
          Pair<T, Key> pair);
 
-    void UpdateBalanceFactor() {
+    void UpdateParams() {
+        int rank_left = 0;
+        int rank_right = 0;
         if (this->left == NULL)
             h_left = 0;
-        else
+        else {
             h_left = std::max(left->h_left, left->h_right) + 1;
+            rank_left = left->rank;
+        }
+
         if (this->right == NULL)
             h_right = 0;
-        else
+        else {
             h_right = std::max(right->h_right, right->h_left) + 1;
+            rank_right = right->rank;
+        }
         balance_factor = h_left - h_right;
+        rank = 1 + rank_right + rank_left;
     }
 };
 
@@ -43,8 +51,8 @@ Node<T, Key>::Node(Node<T, Key> *left, Node<T, Key> *right,
     h_left = 0;
     h_right = 0;
     balance_factor = 0;
-    rank=1;
-    this->UpdateBalanceFactor();
+    rank = 1;
+    this->UpdateParams();
 }
 
 

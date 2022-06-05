@@ -3,4 +3,4 @@ project(untitled61)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(untitled61 main.cpp EmployeeManager.h  MyUnionFind.h MyHashTable.h EmployeeManager.cpp Node.h MyMap.h Pair.h)
+add_executable(untitled61 main.cpp EmployeeManager.h  MyUnionFind.h MyHashTable.h EmployeeManager.cpp Node.h MyMap.h Pair.h MyUnionFInd.cpp)

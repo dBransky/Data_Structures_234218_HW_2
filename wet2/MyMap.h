@@ -81,7 +81,7 @@ private:
 
     void BalanceRoute(Node<T, Key> *updated_node) {
         while (updated_node != NULL) {
-            updated_node->UpdateBalanceFactor();
+            updated_node->UpdateParams();
             if (updated_node->balance_factor < -1 || updated_node->balance_factor > 1) {
                 if (updated_node->balance_factor == 2 && updated_node->left->balance_factor >= 0)
                     LL_Roll(updated_node);
@@ -122,11 +122,11 @@ private:
             }
             temp->father = father;
         }
-        node->UpdateBalanceFactor();
+        node->UpdateParams();
         if (temp != NULL)
-            temp->UpdateBalanceFactor();
+            temp->UpdateParams();
         if (father != NULL)
-            father->UpdateBalanceFactor();
+            father->UpdateParams();
 
     }
 
@@ -150,11 +150,11 @@ private:
             temp->father = father;
         }
 
-        node->UpdateBalanceFactor();
+        node->UpdateParams();
         if (temp != NULL)
-            temp->UpdateBalanceFactor();
+            temp->UpdateParams();
         if (father != NULL)
-            father->UpdateBalanceFactor();
+            father->UpdateParams();
 
     }
 
@@ -188,7 +188,7 @@ private:
                 new Node<T, Key>(NULL, NULL, father, array[mid_index]);
         node->left = TreeFromArray(node, array, first_index, mid_index - 1);
         node->right = TreeFromArray(node, array, mid_index + 1, last_index);
-        node->UpdateBalanceFactor();
+        node->UpdateParams();
         return node;
 
     }
@@ -323,6 +323,8 @@ public:
 
     T GetMaxId();
 
+    int GetRank(Key key);
+
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
@@ -347,7 +349,7 @@ Map<T, Key>::Map() {
 
 template<class T, class Key>
 void Map<T, Key>::insert(Key key, T element) {
-    if(does_exist(key))
+    if (does_exist(key))
         throw KeyAlreadyExists();
     Node<T, Key> *father = GetNodeFather(head, key);
     if (father != NULL) {
@@ -364,7 +366,7 @@ void Map<T, Key>::insert(Key key, T element) {
     if (father->pair.key > key) {
         if (father->left == NULL) {
             father->left = new Node<T, Key>(NULL, NULL, father, pair);
-            father->UpdateBalanceFactor();
+            father->UpdateParams();
         } else {
             father->left->pair.element = element;
         }
@@ -421,8 +423,8 @@ void Map<T, Key>::remove(Key key) {
                 node->father->right = leftest;
             leftest->father = node->father;
         }
-        temp->UpdateBalanceFactor();
-        leftest->UpdateBalanceFactor();
+        temp->UpdateParams();
+        leftest->UpdateParams();
         node->pair.element = NULL;
         delete (node);
         BalanceRoute(temp);
@@ -458,7 +460,7 @@ void Map<T, Key>::remove(Key key) {
             }
         }
     }
-    temp->UpdateBalanceFactor();
+    temp->UpdateParams();
     node->pair.element = NULL;
     delete (node);
     BalanceRoute(temp);
@@ -476,7 +478,7 @@ T Map<T, Key>::GetMaxId() {
 
 template<class T, class Key>
 Pair<T, Key> *Map<T, Key>::GetFirstNum(int NumToReturn) {
-    if (NumToReturn==0)
+    if (NumToReturn == 0)
         return NULL;
     auto *array = new Pair<T, Key>[NumToReturn];
     int i = 0;
@@ -535,6 +537,14 @@ template<class T, class Key>
 bool Map<T, Key>::does_exist(Key key) {
     Node<T, Key> *result = GetNode(head, key);
     return result;
+}
+
+template<class T, class Key>
+int Map<T, Key>::GetRank(Key key) {
+    Node<T, Key> *result = GetNode(head, key);
+    if (result == NULL)
+        throw KeyDoesntExist();
+    return result->rank;
 }
 
 

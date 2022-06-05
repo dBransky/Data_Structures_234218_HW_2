@@ -2,6 +2,7 @@
 #define DATA_STRUCTURES_234218_EmployeeManager
 
 class Company;
+class ReverseTree;
 
 class Employee
 {
@@ -9,15 +10,13 @@ private:
     int id;
     int grade;
     int salary;
-    Company* company;
+    int companyId;
 
 public:
-    Employee(int id, int grade, int salary, Company* company);
+    Employee(int id, int grade, int salary, int companyId);
     int GetEmployeeId();
     int GetGrade();
     int GetSalary();
-    Company* GetCompany();
-
     int GetCompanyId();
 
     void IncreaseGrade(int BumpGrade);
@@ -32,14 +31,16 @@ class Company
 private:
     Company* ownerCompany; // ownerCompany == Null if there is no owner company
     int id;
-    int value;
+    double value;
     int amountOfEmployees;
 
 public:
     Company(int id);
     int GetCompanyId();
-    int GetCompanyValue();
+    double GetCompanyValue();
     int GetCompanyAmountOfEmployees();
+    void IncreaseValue(double add);
+    void SetTotalValue(double newValue);
     void IncreaseAmountOfEmployees(int addAmount);
 };
 

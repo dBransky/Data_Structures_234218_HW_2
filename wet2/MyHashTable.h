@@ -1,3 +1,6 @@
+#ifndef MY_HASH_TABLE
+#define MY_HASH_TABLE
+
 #include "EmployeeManager.h"
 #include <iostream>
 
@@ -241,3 +244,5 @@ public:
         }
     }
 };
+
+#endif

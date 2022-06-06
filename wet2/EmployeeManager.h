@@ -1,8 +1,36 @@
 #ifndef DATA_STRUCTURES_234218_EmployeeManager
 #define DATA_STRUCTURES_234218_EmployeeManager
 
-class Company;
-class ReverseTree;
+#include "MyMap.h"
+
+class SalaryId {
+    double salary;
+    int id;
+
+    friend bool operator>(SalaryId id1, SalaryId id2) {
+        return ((id1.salary == id2.salary && id1.id < id2.id) || id1.salary > id2.salary);
+    }
+
+    friend bool operator<(SalaryId id1, SalaryId id2) {
+        return !(id1 > id2) && !(id1 == id2);
+    }
+
+    friend bool operator==(SalaryId id1, SalaryId id2) {
+        return (id1.salary == id2.salary) && (id1.id == id2.id);
+    }
+
+    friend bool operator>=(SalaryId id1, SalaryId id2) {
+        return ((id1.salary == id2.salary && id1.id <= id2.id) || (id1.salary > id2.salary));
+    }
+
+    friend bool operator<=(SalaryId id1, SalaryId id2) {
+        return id2 >= id1;
+    }
+public:
+    SalaryId()=default;
+
+    SalaryId(double salary, int id) : salary(salary), id(id) {}
+};
 
 class Employee
 {
@@ -18,7 +46,7 @@ public:
     int GetGrade();
     int GetSalary();
     int GetCompanyId();
-
+    void SetCompany(int newCompanyId);
     void IncreaseGrade(int BumpGrade);
     void IncreaseSalary(int SalaryIncrease);
     bool IsSalaryInRange(int minSalary, int maxSalary);
@@ -29,10 +57,12 @@ public:
 class Company
 {
 private:
-    Company* ownerCompany; // ownerCompany == Null if there is no owner company
     int id;
     double value;
     int amountOfEmployees;
+    int amountOfNewEmployees;
+    int totalGradesOfNewEmployees;
+    Map<Employee*, SalaryId> companyEmployees;
 
 public:
     Company(int id);
@@ -42,6 +72,11 @@ public:
     void IncreaseValue(double add);
     void SetTotalValue(double newValue);
     void IncreaseAmountOfEmployees(int addAmount);
+    Map<Employee *, SalaryId>& GetCompanyEmployees();
+    int GetAmountOfNewEmployees();
+    int GetTotalGradeOfNewEmployees();
+    void IncreaseAmountOfNewEmployees(int amountToAdd);
+    void IncreaseTotalGradesOfNewEmployees(int amountToAdd);
 };
 
 

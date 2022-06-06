@@ -483,8 +483,7 @@ Pair<T, Key> *Map<T, Key>::GetFirstNum(int NumToReturn) {
     auto *array = new Pair<T, Key>[NumToReturn];
     int i = 0;
     StoreInorder(this->head, array, &i, NumToReturn);
-    array[NumToReturn - 1].element->id++;
-    array[NumToReturn - 1].element->id--;
+
     return array;
 }
 

@@ -236,6 +236,18 @@ public:
         return employees[index]->FindInlist(id);
     }
 
+    void FreeAll()
+    {
+        for (int i = 0; i < arraySize; i++)
+        {
+            if (employees[i] != NULL)
+            {
+                delete employees[i];
+            }
+        }
+        delete[] employees;
+    }
+
     void PrintHash()
     {
         for (int i = 0; i < arraySize; i++)

@@ -40,21 +40,44 @@ int UnionFind::Find(int CompanyId)
 
 Company* UnionFind::GetCompany(int CompanyId)
 {
-    return elements[CompanyId - 1];
+    return elements[Find(CompanyId) - 1];
+}
+
+Company* UnionFind::GetOriginalCompany(int companyId)
+{
+    return elements[companyId - 1];
 }
 
 void UnionFind::Union(int acquire, int target, double Factor)
 {
-    double amountToAdd = elements[target - 1]->GetCompanyValue() * Factor;
+    int realAcquire = Find(acquire);
+    int realTarget = Find(target);
+    double amountToAdd = elements[realTarget - 1]->GetCompanyValue() * Factor;
     for (int i = 0; i < K; i++)
     {
-        if (Find(i + 1) == acquire)
+        if (Find(i + 1) == realAcquire)
         {
             elements[i]->IncreaseValue(amountToAdd);
         }
     }
-    parents[Find(target) - 1] = acquire;
+    parents[Find(realTarget) - 1] = realAcquire;
 }
+
+
+void UnionFind::FreeAll()
+{
+    delete[] size;
+    delete[] parents;
+    for (int i = 0; i < K; i++)
+    {
+        if (elements[i] != NULL)
+        {
+            delete elements[i];
+        }
+    }
+    delete[] elements;
+}
+
 
 void UnionFind::Itamar(int companyId, int value)
 {

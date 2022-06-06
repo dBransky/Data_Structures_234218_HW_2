@@ -2,34 +2,42 @@
 
 #ifndef UNTITLED61_HIGHTECH_H
 #define UNTITLED61_HIGHTECH_H
-
+#include "EmployeeManager.h"
 #include "MyHashTable.h"
 #include "MyUnionFind.h"
-#include "RankTree.h"
+#include "MyMap.h"
+
+class Exceptions : public std::exception {};
+
+class Failure : public Exceptions {};
+
+class InvalidInput : public Exceptions {};
 
 
 class HighTech
 {
 private:
-    UnionFind* companies;
-    RankTree* allEmployees;
-    HashTable* newEmployees;
-
+    int amountOfNewEmployees;
+    int totalOfGradeOfNewEmployees;
+    int amountOfEmployeesWithSalaryBiggerThenZero;
+    UnionFind companies;
+    Map<Employee*, SalaryId> allEmployees;
+    HashTable newEmployees;
 
 public:
     HighTech(int k);
     ~HighTech();
-    void addEmployee(int EmployeeId, int CompanyId, int Grade);
-    void removeEmployee(int EmployeeId);
-    void acquireCompany(int AcquireId, int TargetId, double Factor);
-    void employeeSalaryIncrease(int EmployeeId, int SalaryIncrease);
-    void promoteEmployee(int EmployeeId, int BumpGrade);
-    void sumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int* sumBumpGrade);
-    void averageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary, double* averageBumpGrade);
-    void companyValue(int CompanyId, double* standing);
+    void AddEmployee(int EmployeeId, int CompanyId, int Grade);
+    void RemoveEmployee(int EmployeeId);
+    void AcquireCompany(int AcquireId, int TargetId, double Factor);
+    void EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease);
+    void PromoteEmployee(int EmployeeId, int BumpGrade);
+    void SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int* sumBumpGrade);
+    void AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary, double* averageBumpGrade);
+    void CompanyValue(int CompanyId, double* standing);
 
     //Extra
-    void bumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade);
+    void BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade);
 
 
 

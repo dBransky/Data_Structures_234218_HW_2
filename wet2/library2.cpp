@@ -1,8 +1,9 @@
 
 #include "library2.h"
+
 #include "HighTech.h"
 
-void* init(int k)
+void *Init(int k)
 {
 	if (k <= 0)
 	{
@@ -16,7 +17,7 @@ void* init(int k)
 }
 
 
-StatusType addEmployee(void *DS, int EmployeeID, int CompanyID, int Grade) 
+StatusType AddEmployee(void *DS, int EmployeeID, int CompanyID, int Grade)
 {
     if (DS == NULL) 
 		return INVALID_INPUT;
@@ -36,7 +37,7 @@ StatusType addEmployee(void *DS, int EmployeeID, int CompanyID, int Grade)
 
 }
 
-StatusType removeEmployee(void *DS, int EmployeeID) {
+StatusType RemoveEmployee(void *DS, int EmployeeID) {
     if (DS == NULL) return INVALID_INPUT;
     try {
         ((HighTech *) DS)->RemoveEmployee(EmployeeID);
@@ -54,10 +55,11 @@ StatusType removeEmployee(void *DS, int EmployeeID) {
 
 }
 
-StatusType acquireCompany(void *DS, int AcquirerID, int TargetID, double Factor) {
+StatusType AcquireCompany(void *DS, int companyID1, int companyID2, double factor)
+{
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->AcquireCompany(AcquirerID, TargetID, Factor);
+        ((HighTech *) DS)->AcquireCompany(companyID1, companyID2, factor);
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -68,7 +70,7 @@ StatusType acquireCompany(void *DS, int AcquirerID, int TargetID, double Factor)
     return SUCCESS;
 }
 
-StatusType employeeSalaryIncrease(void *DS, int EmployeeID, int SalaryIncrease)
+StatusType EmployeeSalaryIncrease(void *DS, int EmployeeID, int SalaryIncrease)
 {
     if (DS == NULL) return INVALID_INPUT;
     try {
@@ -87,7 +89,7 @@ StatusType employeeSalaryIncrease(void *DS, int EmployeeID, int SalaryIncrease)
 }
 
 
-StatusType promoteEmployee(void *DS, int EmployeeID, int BumpGrade) {
+StatusType PromoteEmployee(void *DS, int EmployeeID, int BumpGrade) {
     if (DS == NULL) return INVALID_INPUT;
     try {
         ((HighTech *) DS)->PromoteEmployee(EmployeeID, BumpGrade);
@@ -104,10 +106,10 @@ StatusType promoteEmployee(void *DS, int EmployeeID, int BumpGrade) {
     return SUCCESS;
 }
 
-StatusType sumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m) {
+StatusType SumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m, void* sumBumpGrade) {
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->SumOfBumpGradeBetweenTopWorkersByGroup(CompanyID, m);
+        ((HighTech *) DS)->SumOfBumpGradeBetweenTopWorkersByGroup(CompanyID, m, static_cast<int *>(sumBumpGrade));
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -121,10 +123,11 @@ StatusType sumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m
     return SUCCESS;
 }
 
-StatusType averageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int lowerSalary, higherSalary) {
+StatusType AverageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int lowerSalary, int higherSalary, void* averageBumpGrade) {
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->AverageBumpGradeBetweenSalaryByGroup(CompanyID, lowerSalary, higherSalary);
+        ((HighTech *) DS)->AverageBumpGradeBetweenSalaryByGroup(CompanyID, lowerSalary, higherSalary,
+                                                                static_cast<double *>(averageBumpGrade));
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -138,10 +141,11 @@ StatusType averageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int low
     return SUCCESS;
 }
 
-StatusType companyValue(void *DS, int CompanyID) {
+StatusType CompanyValue(void *DS, int companyID, void *standing)
+{
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->CompanyValue(CompanyID);
+        ((HighTech *) DS)->CompanyValue(companyID, static_cast<double *>(standing));
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -155,7 +159,7 @@ StatusType companyValue(void *DS, int CompanyID) {
     return SUCCESS;
 }
 
-StatusType bumpGradeToEmployees(void *DS, int lowerSalary, int higherSalary, int BumpGrade)
+StatusType BumpGradeToEmployees(void *DS, int lowerSalary, int higherSalary, int BumpGrade)
 {
     if (DS == NULL) return INVALID_INPUT;
     try {

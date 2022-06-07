@@ -327,6 +327,59 @@ private:
 
     }
 
+    void CountMinMaxLog(Node<T, Key> *node, int *size, Key min_key, Key max_key, int split_dir) {
+        if (!node)
+            return;
+        if (node->pair.key <= max_key && node->pair.key >= min_key) {
+            (*size)++;
+            if (split_dir == -1) {
+                CountMinMax(node->left, size, min_key, max_key, 0);
+                CountMinMax(node->right, size, min_key, max_key, 1);
+            }
+            if (split_dir == 0) {
+                (*size) + node->rank_right;
+                CountMinMax(node->left, size, min_key, max_key, 0);
+            }
+            if (split_dir == 1) {
+                (*size) + node->rank_left;
+                CountMinMax(node->left, size, min_key, max_key, 1);
+            }
+        } else {
+            if (node->pair.key <= max_key) {
+                CountMinMax(node->right, size, min_key, max_key, split_dir);
+            }
+            if (node->pair.key >= max_key) {
+                CountMinMax(node->left, size, min_key, max_key, split_dir);
+            }
+        }
+    }
+    void SumMinMaxLog(Node<T, Key> *node, int *grade_sum, Key min_key, Key max_key, int split_dir) {
+        if (!node)
+            return;
+        if (node->pair.key <= max_key && node->pair.key >= min_key) {
+            (*grade_sum)+=node->pair.element.GetGrade();
+            if (split_dir == -1) {
+                CountMinMax(node->left, grade_sum, min_key, max_key, 0);
+                CountMinMax(node->right, grade_sum, min_key, max_key, 1);
+            }
+            if (split_dir == 0) {
+                (*grade_sum) + node->grade_right;
+                CountMinMax(node->left, grade_sum, min_key, max_key, 0);
+            }
+            if (split_dir == 1) {
+                (*grade_sum) + node->grade_left;
+                CountMinMax(node->left, grade_sum, min_key, max_key, 1);
+            }
+        } else {
+            if (node->pair.key <= max_key) {
+                CountMinMax(node->right, grade_sum, min_key, max_key, split_dir);
+            }
+            if (node->pair.key >= max_key) {
+                CountMinMax(node->left, grade_sum, min_key, max_key, split_dir);
+            }
+        }
+    }
+
 public:
     Map();
 
@@ -349,6 +402,8 @@ public:
     int GetRank(Key key);
 
     int SumGrades(int m);
+
+    int AvgGrades(Key top, Key bottom);
 
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
@@ -583,5 +638,13 @@ int Map<T, Key>::SumGrades(int m) {
     return SumGradesNodes(head, m);
 }
 
+template<class T, class Key>
+int Map<T, Key>::AvgGrades(Key top, Key bottom) {
+    int size;
+    CountMinMaxLog(head,&size,top,bottom,-1);
+    int sum;
+    SumMinMaxLog(head,&sum,top,bottom,-1);
+    return (double)sum/(double)size;
+}
 
 #endif //DATA_STRUCTURES_234218_Map_H

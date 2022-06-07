@@ -641,14 +641,14 @@ int Map<T, Key>::SumGrades(int m) {
 
 template<class T, class Key>
 int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
-    int size;
+    int size=0;
     CountMinMaxLog(head, &size, top, bottom, -1);
     return size;
 }
 
 template<class T, class Key>
 int Map<T, Key>::SumMinMax(Key top, Key bottom) {
-    int sum;
+    int sum=0;
     SumMinMaxLog(head, &sum, top, bottom, -1);
     return sum;
 }

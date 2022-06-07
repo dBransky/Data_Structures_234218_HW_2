@@ -111,7 +111,7 @@ private:
         if (m == 0)
             return 0;
         if (node->rank_right < m) {
-            return node->grade_right + node->pair.element->grade + SumGradesNodes(node->left, m - node->rank_right - 1);
+            return node->grade_right + node->pair.element->GetGrade() + SumGradesNodes(node->left, m - node->rank_right - 1);
         }
         if (node->rank_right >= m) {
             return SumGradesNodes(node->right, m);
@@ -333,23 +333,23 @@ private:
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
             (*size)++;
             if (split_dir == -1) {
-                CountMinMax(node->left, size, min_key, max_key, 0);
-                CountMinMax(node->right, size, min_key, max_key, 1);
+                CountMinMaxLog(node->left, size, min_key, max_key, 0);
+                CountMinMaxLog(node->right, size, min_key, max_key, 1);
             }
             if (split_dir == 0) {
                 (*size) + node->rank_right;
-                CountMinMax(node->left, size, min_key, max_key, 0);
+                CountMinMaxLog(node->left, size, min_key, max_key, 0);
             }
             if (split_dir == 1) {
                 (*size) + node->rank_left;
-                CountMinMax(node->left, size, min_key, max_key, 1);
+                CountMinMaxLog(node->left, size, min_key, max_key, 1);
             }
         } else {
             if (node->pair.key <= max_key) {
-                CountMinMax(node->right, size, min_key, max_key, split_dir);
+                CountMinMaxLog(node->right, size, min_key, max_key, split_dir);
             }
             if (node->pair.key >= max_key) {
-                CountMinMax(node->left, size, min_key, max_key, split_dir);
+                CountMinMaxLog(node->left, size, min_key, max_key, split_dir);
             }
         }
     }
@@ -360,23 +360,23 @@ private:
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
             (*grade_sum) += node->pair.element.GetGrade();
             if (split_dir == -1) {
-                CountMinMax(node->left, grade_sum, min_key, max_key, 0);
-                CountMinMax(node->right, grade_sum, min_key, max_key, 1);
+                SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
+                SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
             }
             if (split_dir == 0) {
                 (*grade_sum) + node->grade_right;
-                CountMinMax(node->left, grade_sum, min_key, max_key, 0);
+                SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
             }
             if (split_dir == 1) {
                 (*grade_sum) + node->grade_left;
-                CountMinMax(node->left, grade_sum, min_key, max_key, 1);
+                SumMinMaxLog(node->left, grade_sum, min_key, max_key, 1);
             }
         } else {
             if (node->pair.key <= max_key) {
-                CountMinMax(node->right, grade_sum, min_key, max_key, split_dir);
+                SumMinMaxLog(node->right, grade_sum, min_key, max_key, split_dir);
             }
             if (node->pair.key >= max_key) {
-                CountMinMax(node->left, grade_sum, min_key, max_key, split_dir);
+                SumMinMaxLog(node->left, grade_sum, min_key, max_key, split_dir);
             }
         }
     }
@@ -404,11 +404,9 @@ public:
 
     int SumGrades(int m);
 
-
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
-
 
     int SumMinMax(Key top, Key bottom);
 

@@ -88,12 +88,16 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
+    if (EmployeeId == 38 && SalaryIncrease == 12)
+    {
+        int x = 5;
+    }
     if (EmployeeId <= 0 || SalaryIncrease <= 0) {
-        assert(allEmployees.check_is_valid());
+       // assert(allEmployees.check_is_valid());
         throw InvalidInput();
     }
     if (newEmployees.FindById(EmployeeId) == NULL) {
-        assert(allEmployees.check_is_valid());
+       // assert(allEmployees.check_is_valid());
         throw Failure();
     }
     Company* company = companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId());
@@ -104,7 +108,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
     } else {
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
-        company->IncreaseTotalGradesOfNewEmployees(-1);
+        company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGrade());
         amountOfNewEmployees--;
         totalOfGradeOfNewEmployees -= employee->GetSalary();
@@ -129,8 +133,9 @@ void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {
         assert(allEmployees.check_is_valid());
         if (newEmployees.FindById(EmployeeId)->GetSalary() == 0)
         {
-            companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->IncreaseTotalGradesOfNewEmployees(1);
-            totalOfGradeOfNewEmployees++;
+            newEmployees.FindById(EmployeeId)->IncreaseGrade(BumpGrade);
+            companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->IncreaseTotalGradesOfNewEmployees(BumpGrade);
+            totalOfGradeOfNewEmployees += BumpGrade;
         }
         else
         {
@@ -138,7 +143,7 @@ void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {
             allEmployees.remove(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
             assert(allEmployees.check_is_valid());
             companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees().remove(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
-            newEmployees.FindById(EmployeeId)->IncreaseGrade(1);
+            newEmployees.FindById(EmployeeId)->IncreaseGrade(BumpGrade);
             allEmployees.insert(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId),employee);
             companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees().insert(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId),employee);
         }

@@ -50,7 +50,7 @@ public:
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
-        sum_grade = grade_right + grade_left + pair.element->grade;
+        sum_grade = grade_right + grade_left + pair.element->GetGrade();
     }
 };
 

@@ -10,6 +10,7 @@ private:
     int K;
     int* size;
     int* parents;
+    double* salaryIncrease;
     Company** elements;
 
 public:
@@ -17,10 +18,11 @@ public:
     int Find(int CompanyId);
     Company* GetCompany(int CompanyId);
     Company* GetCompanyById(int companyId);
+    double GetCompanyValue(int CompanyId);
+    void Itamar(int companyId, double value);
     void Union(int acquire, int target, double Factor);
     void FreeAll();
     int GetK();
-    void Itamar(int companyId, int value);
     void PrintStatus();
 };
 

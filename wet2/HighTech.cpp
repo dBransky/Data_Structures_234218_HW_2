@@ -135,6 +135,8 @@ void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade)
         {
             companies.GetCompanyById(newEmployees.FindById(EmployeeId)->GetCompanyId())->IncreaseTotalGradesOfNewEmployees(1);
             totalOfGradeOfNewEmployees++;
+            companies.GetCompanyById(newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees().UpdateGrades(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
+
         }
     }
 }
@@ -154,12 +156,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int 
         }
         else
         {
-            Pair<Employee*, SalaryId>* pair_list = companies.GetCompany(CompanyId)->GetCompanyEmployees().GetFirstNum(m);
-            for (int i = 0; i < m; i++)
-            {
-                std::cout << pair_list[i].element->GetGrade() << std::endl;
-                totalSum += pair_list[i].element->GetGrade();
-            }
+            totalSum = companies.GetCompany(CompanyId)->GetCompanyEmployees().SumGrades(m);
         }
     }
     else
@@ -170,16 +167,11 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int 
         }
         else
         {
-            Pair<Employee*, SalaryId>* pair_list = allEmployees.GetFirstNum(m);
-            for (int i = 0; i < m; i++)
-            {
-                totalSum += pair_list[i].element->GetGrade();
-            }
+            totalSum = allEmployees.SumGrades(m);
         }
     }
     *sumBumpGrade = totalSum;
     std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int)*sumBumpGrade)  << std::endl;
-
 }
 
 void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary, double *averageBumpGrade)
@@ -205,13 +197,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     }
     if (CompanyId > 0)
     {
-        int amount = 0;
-        Pair<Employee*, SalaryId>* pair_list = companies.GetCompany(CompanyId)->GetCompanyEmployees().GetObjectsFromKey(SalaryId(lowerSalary - 1, 0), SalaryId(higherSalary + 1,1000000), &amount);
-        for (int i = 0; i < amount; i++)
-        {
-            totalSum += pair_list[i].element->GetGrade();
-        }
-        totalAmount += amount;
+        totalAmount += companies.GetCompany(CompanyId)->GetCompanyEmployees().AmountMinMax(SalaryId(higherSalary,INT16_MAX),SalaryId(lowerSalary, INT16_MIN));
+        totalSum += companies.GetCompany(CompanyId)->GetCompanyEmployees().SumMinMax(SalaryId(higherSalary,INT16_MAX),SalaryId(lowerSalary, INT16_MIN));
         if (totalAmount == 0)
         {
             throw Failure();
@@ -219,13 +206,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     }
     else
     {
-        int amount = 0;
-        Pair<Employee*, SalaryId>* pair_list = allEmployees.GetObjectsFromKey(SalaryId(lowerSalary, 0), SalaryId(higherSalary,0), &amount);
-        for (int i = 0; i < amount; i++)
-        {
-            totalSum += pair_list[i].element->GetGrade();
-        }
-        totalAmount += amount;
+        totalAmount += allEmployees.AmountMinMax(SalaryId(higherSalary,INT16_MAX),SalaryId(lowerSalary, INT16_MIN));
+        totalSum += allEmployees.SumMinMax(SalaryId(lowerSalary, INT16_MIN), SalaryId(higherSalary,INT16_MAX));
         if (totalAmount == 0)
         {
             throw Failure();
@@ -241,7 +223,7 @@ void HighTech::CompanyValue(int CompanyId, double *standing)
     {
         throw InvalidInput();
     }
-    *standing = companies.GetCompanyById(CompanyId)->GetCompanyValue();
+    *standing = companies.GetCompanyValue(CompanyId); // O(log* k)
     std::cout << "CompanyValue: " << *standing << std::endl;
 }
 

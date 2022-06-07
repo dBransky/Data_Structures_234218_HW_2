@@ -358,7 +358,7 @@ private:
         if (!node)
             return;
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
-            (*grade_sum) += node->pair.element.GetGrade();
+            (*grade_sum) += node->pair.element->GetGrade();
             if (split_dir == -1) {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);

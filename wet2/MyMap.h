@@ -353,11 +353,12 @@ private:
             }
         }
     }
+
     void SumMinMaxLog(Node<T, Key> *node, int *grade_sum, Key min_key, Key max_key, int split_dir) {
         if (!node)
             return;
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
-            (*grade_sum)+=node->pair.element.GetGrade();
+            (*grade_sum) += node->pair.element.GetGrade();
             if (split_dir == -1) {
                 CountMinMax(node->left, grade_sum, min_key, max_key, 0);
                 CountMinMax(node->right, grade_sum, min_key, max_key, 1);
@@ -403,13 +404,15 @@ public:
 
     int SumGrades(int m);
 
-    int AvgGrades(Key top, Key bottom);
 
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
 
 
+    int SumMinMax(Key top, Key bottom);
+
+    int AmountMinMax(Key top, Key bottom);
 };
 
 template<class T, class Key>
@@ -639,12 +642,17 @@ int Map<T, Key>::SumGrades(int m) {
 }
 
 template<class T, class Key>
-int Map<T, Key>::AvgGrades(Key top, Key bottom) {
+int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
     int size;
-    CountMinMaxLog(head,&size,top,bottom,-1);
+    CountMinMaxLog(head, &size, top, bottom, -1);
+    return size;
+}
+
+template<class T, class Key>
+int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     int sum;
-    SumMinMaxLog(head,&sum,top,bottom,-1);
-    return (double)sum/(double)size;
+    SumMinMaxLog(head, &sum, top, bottom, -1);
+    return sum;
 }
 
 #endif //DATA_STRUCTURES_234218_Map_H

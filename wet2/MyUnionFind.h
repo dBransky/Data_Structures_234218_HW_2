@@ -16,7 +16,7 @@ public:
     UnionFind(int k);
     int Find(int CompanyId);
     Company* GetCompany(int CompanyId);
-    Company* GetOriginalCompany(int companyId);
+    Company* GetCompanyById(int companyId);
     void Union(int acquire, int target, double Factor);
     void FreeAll();
     int GetK();

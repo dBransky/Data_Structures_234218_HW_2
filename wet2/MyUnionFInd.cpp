@@ -43,7 +43,7 @@ Company* UnionFind::GetCompany(int CompanyId)
     return elements[Find(CompanyId) - 1];
 }
 
-Company* UnionFind::GetOriginalCompany(int companyId)
+Company* UnionFind::GetCompanyById(int companyId)
 {
     return elements[companyId - 1];
 }

@@ -105,6 +105,19 @@ private:
 
     }
 
+    int SumGradesNodes(Node<T, Key> node, int m) {
+        if (!node)
+            return 0;
+        if (m == 0)
+            return 0;
+        if (node.rank_right < m) {
+            return node.grade_right + node.pair.element->grade + SumGradesNodes(node.left, m - node.rank_right - 1);
+        }
+        if (node.rank_right >= m) {
+            return SumGradesNodes(node.right, m);
+        }
+    }
+
     bool IsLeftSon(Node<T, Key> *son, Node<T, Key> *father) {
         if (father == NULL || son == NULL)
             return false;
@@ -335,6 +348,8 @@ public:
 
     int GetRank(Key key);
 
+    int SumGrades(int m);
+
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
@@ -493,7 +508,6 @@ Pair<T, Key> *Map<T, Key>::GetFirstNum(int NumToReturn) {
     auto *array = new Pair<T, Key>[NumToReturn];
     int i = 0;
     StoreInorder(this->head, array, &i, NumToReturn);
-
     return array;
 }
 
@@ -562,6 +576,11 @@ void Map<T, Key>::UpdateGrades(Key key) {
     if (result == NULL)
         throw KeyDoesntExist();
     UpdateRouteParams(result);
+}
+
+template<class T, class Key>
+int Map<T, Key>::SumGrades(int m) {
+    return SumGradesNodes(head, m);
 }
 
 

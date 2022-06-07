@@ -18,28 +18,32 @@ public:
     int h_left;
     int h_right;
     int balance_factor;
+    int rank_left;
+    int rank_right;
     int rank;
     int sum_grade;
+    int grade_left;
+    int grade_right;
 
     Node(Node<T, Key> *left, Node<T, Key> *right, Node<T, Key> *father,
          Pair<T, Key> pair);
 
     void UpdateParams() {
-        int rank_left = 0;
-        int rank_right = 0;
-        int grade_left = 0;
-        int grade_right = 0;
-        if (this->left == NULL)
+        if (this->left == NULL) {
             h_left = 0;
-        else {
+            rank_left = 0;
+            grade_left=0;
+        } else {
             h_left = std::max(left->h_left, left->h_right) + 1;
             rank_left = left->rank;
             grade_left = left->sum_grade;
         }
 
-        if (this->right == NULL)
+        if (this->right == NULL) {
             h_right = 0;
-        else {
+            rank_right = 0;
+            grade_right=0;
+        } else {
             h_right = std::max(right->h_right, right->h_left) + 1;
             rank_right = right->rank;
             grade_right = right->sum_grade;

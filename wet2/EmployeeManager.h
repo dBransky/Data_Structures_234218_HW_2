@@ -8,7 +8,7 @@ class SalaryId {
     int id;
 
     friend bool operator>(SalaryId id1, SalaryId id2) {
-        return ((id1.salary == id2.salary && id1.id < id2.id) || id1.salary > id2.salary);
+        return ((id1.salary == id2.salary && id1.id > id2.id) || id1.salary > id2.salary);
     }
 
     friend bool operator<(SalaryId id1, SalaryId id2) {

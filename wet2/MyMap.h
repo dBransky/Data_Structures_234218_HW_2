@@ -653,14 +653,6 @@ int Map<T, Key>::GetRank(Key key) {
     return result->rank;
 }
 
-template<class T, class Key>
-void Map<T, Key>::UpdateGrades(Key key) {
-    Node<T, Key> *result = GetNode(head, key);
-    if (result == NULL)
-        throw KeyDoesntExist();
-    UpdateRouteParams(result);
-    assert(is_valid(head));
-}
 
 template<class T, class Key>
 int Map<T, Key>::SumGrades(int m) {

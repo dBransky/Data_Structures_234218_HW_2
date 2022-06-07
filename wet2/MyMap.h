@@ -105,16 +105,16 @@ private:
 
     }
 
-    int SumGradesNodes(Node<T, Key> node, int m) {
+    int SumGradesNodes(Node<T, Key> *node, int m) {
         if (!node)
             return 0;
         if (m == 0)
             return 0;
-        if (node.rank_right < m) {
-            return node.grade_right + node.pair.element->grade + SumGradesNodes(node.left, m - node.rank_right - 1);
+        if (node->rank_right < m) {
+            return node->grade_right + node->pair.element->grade + SumGradesNodes(node->left, m - node->rank_right - 1);
         }
-        if (node.rank_right >= m) {
-            return SumGradesNodes(node.right, m);
+        if (node->rank_right >= m) {
+            return SumGradesNodes(node->right, m);
         }
     }
 

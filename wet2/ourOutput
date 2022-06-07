@@ -367,7 +367,7 @@ EmployeeSalaryIncrease: SUCCESS
 EmployeeSalaryIncrease: SUCCESS
 PromoteEmployee: SUCCESS
 AddEmployee: SUCCESS
-AverageBumpGradeBetweenSalaryByGroup: FAILURE
+AverageBumpGradeBetweenSalaryByGroup: 3.81818
 RemoveEmployee: SUCCESS
 PromoteEmployee: FAILURE
 AddEmployee: SUCCESS
@@ -454,5 +454,23 @@ PromoteEmployee: SUCCESS
 RemoveEmployee: SUCCESS
 EmployeeSalaryIncrease: FAILURE
 EmployeeSalaryIncrease: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+EmployeeSalaryIncrease: FAILURE
+EmployeeSalaryIncrease: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+PromoteEmployee: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+PromoteEmployee: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+EmployeeSalaryIncrease: SUCCESS
+PromoteEmployee: SUCCESS
+PromoteEmployee: SUCCESS
+EmployeeSalaryIncrease: FAILURE
+PromoteEmployee: SUCCESS
+PromoteEmployee: SUCCESS
+PromoteEmployee: FAILURE
+terminate called after throwing an instance of 'KeyDoesntExist'
+  what():  std::exception
 
-Process finished with exit code -1073741819 (0xC0000005)
+Process finished with exit code 3

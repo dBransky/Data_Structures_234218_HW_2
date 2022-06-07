@@ -79,6 +79,7 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
+    assert(allEmployees.check_is_valid());
     if (EmployeeId <= 0 || SalaryIncrease <= 0) {
         throw InvalidInput();
     }

@@ -3,6 +3,7 @@
 //
 
 #include <memory>
+#include <cassert>
 #include "Node.h"
 
 
@@ -111,7 +112,8 @@ private:
         if (m == 0)
             return 0;
         if (node->rank_right < m) {
-            return node->grade_right + node->pair.element->GetGrade() + SumGradesNodes(node->left, m - node->rank_right - 1);
+            return node->grade_right + node->pair.element->GetGrade() +
+                   SumGradesNodes(node->left, m - node->rank_right - 1);
         }
         if (node->rank_right >= m) {
             return SumGradesNodes(node->right, m);
@@ -279,9 +281,12 @@ private:
         if (node == NULL)
             return true;
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
-        return loop_free;
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade());
+        return loop_free && valid_grade;
 
     }
+
+
 
     void NULLInorder(Node<T, Key> *node) {
         if (node == NULL)
@@ -317,6 +322,8 @@ private:
     }
 
     void CountMinMax(Node<T, Key> *node, int *size, Key min_key, Key max_key) {
+        if (!node)
+            return;
         if (node->left != NULL && node->pair.key >= min_key)
             CountMinMax(node->left, size, min_key, max_key);
         if (node->pair.key >= min_key && node->pair.key <= max_key) {
@@ -326,6 +333,7 @@ private:
             CountMinMax(node->right, size, min_key, max_key);
 
     }
+
 
     void CountMinMaxLog(Node<T, Key> *node, int *size, Key min_key, Key max_key, int split_dir) {
         if (!node)
@@ -337,18 +345,18 @@ private:
                 CountMinMaxLog(node->right, size, min_key, max_key, 1);
             }
             if (split_dir == 0) {
-                (*size) + node->rank_right;
+                (*size) += node->rank_right;
                 CountMinMaxLog(node->left, size, min_key, max_key, 0);
             }
             if (split_dir == 1) {
-                (*size) + node->rank_left;
-                CountMinMaxLog(node->left, size, min_key, max_key, 1);
+                (*size) += node->rank_left;
+                CountMinMaxLog(node->right, size, min_key, max_key, 1);
             }
         } else {
             if (node->pair.key <= max_key) {
                 CountMinMaxLog(node->right, size, min_key, max_key, split_dir);
             }
-            if (node->pair.key >= max_key) {
+            if (node->pair.key >= min_key) {
                 CountMinMaxLog(node->left, size, min_key, max_key, split_dir);
             }
         }
@@ -364,18 +372,18 @@ private:
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
             }
             if (split_dir == 0) {
-                (*grade_sum) + node->grade_right;
+                (*grade_sum) += node->grade_right;
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
             }
             if (split_dir == 1) {
-                (*grade_sum) + node->grade_left;
-                SumMinMaxLog(node->left, grade_sum, min_key, max_key, 1);
+                (*grade_sum) += node->grade_left;
+                SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
             }
         } else {
             if (node->pair.key <= max_key) {
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, split_dir);
             }
-            if (node->pair.key >= max_key) {
+            if (node->pair.key >= min_key) {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, split_dir);
             }
         }
@@ -411,6 +419,7 @@ public:
     int SumMinMax(Key top, Key bottom);
 
     int AmountMinMax(Key top, Key bottom);
+    bool check_is_valid();
 };
 
 template<class T, class Key>
@@ -418,6 +427,7 @@ T Map<T, Key>::find(Key key) {
     Node<T, Key> *result = GetNode(head, key);
     if (result == NULL)
         throw KeyDoesntExist();
+    assert(is_valid(head));
     return result->pair.element;
 }
 
@@ -426,10 +436,13 @@ template<class T, class Key>
 Map<T, Key>::Map() {
     head = NULL;
     amount = 0;
+    assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::insert(Key key, T element) {
+    if (!is_valid(head))
+        int z = 1;
     if (does_exist(key))
         throw KeyAlreadyExists();
     Node<T, Key> *father = GetNodeFather(head, key);
@@ -442,6 +455,7 @@ void Map<T, Key>::insert(Key key, T element) {
     amount++;
     if (father == NULL) {
         head = new Node<T, Key>(NULL, NULL, NULL, pair);
+        assert(is_valid(head));
         return;
     }
     if (father->pair.key > key) {
@@ -460,10 +474,12 @@ void Map<T, Key>::insert(Key key, T element) {
         }
         BalanceRoute(father->right);
     }
+    assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
+    assert(is_valid(head));
     Node<T, Key> *node = GetNode(head, key);
     if (node == NULL)
         throw KeyDoesntExist();
@@ -472,6 +488,7 @@ void Map<T, Key>::remove(Key key) {
     if (amount == 0) {
         delete head;
         head = NULL;
+        assert(is_valid(head));
         return;
     }
     if (node->right != NULL && node->left != NULL) {
@@ -509,6 +526,7 @@ void Map<T, Key>::remove(Key key) {
         node->pair.element = NULL;
         delete (node);
         BalanceRoute(temp);
+        assert(is_valid(head));
         return;
     }
     if (node->right == NULL && node->left == NULL) {
@@ -545,6 +563,7 @@ void Map<T, Key>::remove(Key key) {
     node->pair.element = NULL;
     delete (node);
     BalanceRoute(temp);
+    assert(is_valid(head));
 }
 
 template<class T, class Key>
@@ -553,6 +572,7 @@ T Map<T, Key>::GetMaxId() {
         return NULL;
     }
     auto *node = GetRightestNode(head)->pair.element;
+    assert(is_valid(head));
     return node;
 }
 
@@ -564,6 +584,7 @@ Pair<T, Key> *Map<T, Key>::GetFirstNum(int NumToReturn) {
     auto *array = new Pair<T, Key>[NumToReturn];
     int i = 0;
     StoreInorder(this->head, array, &i, NumToReturn);
+    assert(is_valid(head));
     return array;
 }
 
@@ -578,12 +599,14 @@ Pair<T, Key> *Map<T, Key>::GetObjectsFromKey(Key min_key, Key max_key, int *size
     auto *array = new Pair<T, Key>[*size];
     int i = 0;
     ArrayByMinMax(head, array, &i, min_key, max_key);
+    assert(is_valid(head));
     return array;
 
 }
 
 template<class T, class Key>
 Map<T, Key>::~Map() {
+
     FreePostOrder(head);
 }
 
@@ -609,12 +632,15 @@ void Map<T, Key>::merge(Map &map) {
         merged[i].element = NULL;
     }
     delete[] merged;
+    assert(is_valid(head));
 
 }
 
 template<class T, class Key>
 bool Map<T, Key>::does_exist(Key key) {
     Node<T, Key> *result = GetNode(head, key);
+    if (!is_valid(head))
+        int z = 1;
     return result;
 }
 
@@ -623,6 +649,7 @@ int Map<T, Key>::GetRank(Key key) {
     Node<T, Key> *result = GetNode(head, key);
     if (result == NULL)
         throw KeyDoesntExist();
+    assert(is_valid(head));
     return result->rank;
 }
 
@@ -632,25 +659,37 @@ void Map<T, Key>::UpdateGrades(Key key) {
     if (result == NULL)
         throw KeyDoesntExist();
     UpdateRouteParams(result);
+    assert(is_valid(head));
 }
 
 template<class T, class Key>
 int Map<T, Key>::SumGrades(int m) {
+    assert(is_valid(head));
     return SumGradesNodes(head, m);
 }
 
 template<class T, class Key>
 int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
-    int size=0;
-    CountMinMaxLog(head, &size, top, bottom, -1);
+    int size = 0;
+    CountMinMaxLog(head, &size, bottom, top, -1);
+    assert(is_valid(head));
     return size;
+
 }
 
 template<class T, class Key>
 int Map<T, Key>::SumMinMax(Key top, Key bottom) {
-    int sum=0;
-    SumMinMaxLog(head, &sum, top, bottom, -1);
+    int sum = 0;
+    if (top.salary == 28 && bottom.salary == 22)
+        int z = 1;
+    SumMinMaxLog(head, &sum, bottom, top, -1);
     return sum;
+    assert(is_valid(head));
+}
+
+template<class T, class Key>
+bool Map<T, Key>::check_is_valid() {
+    return is_valid(head);
 }
 
 #endif //DATA_STRUCTURES_234218_Map_H

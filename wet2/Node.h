@@ -32,7 +32,7 @@ public:
         if (this->left == NULL) {
             h_left = 0;
             rank_left = 0;
-            grade_left=0;
+            grade_left = 0;
         } else {
             h_left = std::max(left->h_left, left->h_right) + 1;
             rank_left = left->rank;
@@ -42,7 +42,7 @@ public:
         if (this->right == NULL) {
             h_right = 0;
             rank_right = 0;
-            grade_right=0;
+            grade_right = 0;
         } else {
             h_right = std::max(right->h_right, right->h_left) + 1;
             rank_right = right->rank;
@@ -50,7 +50,10 @@ public:
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
-        sum_grade = grade_right + grade_left + pair.element->GetGrade();
+        if (!pair.element)
+            sum_grade = grade_left + grade_right;
+        else
+            sum_grade = grade_right + grade_left + pair.element->GetGrade();
     }
 };
 

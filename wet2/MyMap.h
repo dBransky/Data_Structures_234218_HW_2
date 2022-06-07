@@ -97,6 +97,14 @@ private:
         }
     }
 
+    void UpdateRouteParams(Node<T, Key> *updated_node) {
+        while (updated_node != NULL) {
+            updated_node->UpdateParams();
+            updated_node = updated_node->father;
+        }
+
+    }
+
     bool IsLeftSon(Node<T, Key> *son, Node<T, Key> *father) {
         if (father == NULL || son == NULL)
             return false;
@@ -321,6 +329,8 @@ public:
 
     void merge(Map &);
 
+    void UpdateGrades(Key key);
+
     T GetMaxId();
 
     int GetRank(Key key);
@@ -544,6 +554,14 @@ int Map<T, Key>::GetRank(Key key) {
     if (result == NULL)
         throw KeyDoesntExist();
     return result->rank;
+}
+
+template<class T, class Key>
+void Map<T, Key>::UpdateGrades(Key key) {
+    Node<T, Key> *result = GetNode(head, key);
+    if (result == NULL)
+        throw KeyDoesntExist();
+    UpdateRouteParams(result);
 }
 
 

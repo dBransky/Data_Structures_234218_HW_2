@@ -92,19 +92,12 @@ private:
                     RL_Roll(updated_node);
                 if (updated_node->balance_factor == -2 && updated_node->right->balance_factor <= 0)
                     RR_Roll(updated_node);
-                break;
+//                break;
             }
             updated_node = updated_node->father;
         }
     }
 
-    void UpdateRouteParams(Node<T, Key> *updated_node) {
-        while (updated_node != NULL) {
-            updated_node->UpdateParams();
-            updated_node = updated_node->father;
-        }
-
-    }
 
     int SumGradesNodes(Node<T, Key> *node, int m) {
         if (!node)
@@ -281,7 +274,18 @@ private:
         if (node == NULL)
             return true;
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade());
+        bool left_valid;
+        if(node->left)
+            left_valid=(node->grade_left==node->left->sum_grade);
+        else
+            left_valid=(node->grade_left==0);
+        bool right_valid;
+        if(node->right)
+            right_valid=(node->grade_right==node->right->sum_grade);
+        else
+            right_valid=(node->grade_right==0);
+
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
         return loop_free && valid_grade;
 
     }
@@ -404,8 +408,6 @@ public:
 
     void merge(Map &);
 
-    void UpdateGrades(Key key);
-
     T GetMaxId();
 
     int GetRank(Key key);
@@ -466,20 +468,27 @@ void Map<T, Key>::insert(Key key, T element) {
             father->left->pair.element = element;
         }
         BalanceRoute(father->left);
+        assert(is_valid(head));
     } else {
+        assert(is_valid(head));
         if (father->right == NULL) {
+            assert(is_valid(head));
             father->right = new Node<T, Key>(NULL, NULL, father, pair);
         } else {
+            assert(is_valid(head));
             father->right->pair.element = element;
         }
         BalanceRoute(father->right);
+        if(!is_valid(head))
+            int z=1;
     }
     assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
-    assert(is_valid(head));
+    if(!is_valid(head))
+        int z=1;
     Node<T, Key> *node = GetNode(head, key);
     if (node == NULL)
         throw KeyDoesntExist();
@@ -671,12 +680,13 @@ int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
 
 template<class T, class Key>
 int Map<T, Key>::SumMinMax(Key top, Key bottom) {
+    assert(is_valid(head));
     int sum = 0;
     if (top.salary == 28 && bottom.salary == 22)
         int z = 1;
     SumMinMaxLog(head, &sum, bottom, top, -1);
-    return sum;
     assert(is_valid(head));
+    return sum;
 }
 
 template<class T, class Key>

@@ -13,6 +13,7 @@ private:
 public:
     MyNode(Employee* employee, MyNode* next = NULL) : value(employee), next(next) {};
     Employee* GetValue() { return value; }
+    Employee* SetValueToNull() { value = NULL; }
     MyNode* GetNext() { return next; }
     void SetNext(MyNode* newNext) { next = newNext; }
 };
@@ -154,13 +155,17 @@ public:
         employees = new_array;
         arraySize = arraySize * expand_factor;
         MyNode* ptr;
+        MyNode* ptrDoDelete;
         for (int i = 0; i < original_size ; i++)
         {
             if (temp[i]->GetFirstNode() != NULL) {
                 ptr = temp[i]->GetFirstNode();
                 while (ptr != NULL) {
+                    ptrDoDelete = ptr;
                     Insert(ptr->GetValue());
                     ptr = ptr->GetNext();
+                    ptrDoDelete->SetValueToNull();
+                    delete(ptrDoDelete);
                 }
             }
         }
@@ -179,14 +184,18 @@ public:
         employees = new_array;
         arraySize = arraySize / expand_factor;
         MyNode* ptr;
+        MyNode* ptrDoDelete;
         for (int i = 0; i < original_size ; i++)
         {
             if (temp[i] != NULL) {
                 if (temp[i]->GetFirstNode() != NULL) {
                     ptr = temp[i]->GetFirstNode();
                     while (ptr != NULL) {
+                        ptrDoDelete = ptr;
                         Insert(ptr->GetValue());
                         ptr = ptr->GetNext();
+                        ptrDoDelete->SetValueToNull();
+                        delete(ptrDoDelete);
                     }
                 }
             }
@@ -194,15 +203,25 @@ public:
         delete temp;
     }
 
-    void Insert(Employee* employee)
+    bool Insert(Employee* employee)
     {
-        if (currentAmount >= load_factor * arraySize)
+        int id = employee->GetEmployeeId();
+        int key = GetHashKey(id);
+        bool exist = employees[key]->IsExist(id);
+        if (exist)
         {
-            ExpandSize();
+            return false;
         }
-        int key = GetHashKey(employee->GetEmployeeId());
-        employees[key]->InsertAtBeginning(employee);
-        currentAmount++;
+        else
+        {
+            if (currentAmount >= load_factor * arraySize)
+            {
+                ExpandSize();
+            }
+            employees[key]->InsertAtBeginning(employee);
+            currentAmount++;
+            return true;
+        }
     }
 
     bool DeleteById(int id)

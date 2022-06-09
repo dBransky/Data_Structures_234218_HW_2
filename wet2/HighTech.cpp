@@ -42,6 +42,7 @@ void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
     Employee *employee = new Employee(EmployeeId, Grade, 0, correctCompanyId);
     assert(employee != NULL);
     newEmployees.Insert(employee);
+    Company* company=companies.GetCorrectCompanyPosByConst(correctCompanyId);
     company->IncreaseAmountOfNewEmployees(1);
     company->IncreaseTotalGradesOfNewEmployees(Grade);
     amountOfNewEmployees++;
@@ -77,7 +78,7 @@ void HighTech::RemoveEmployee(int EmployeeId) {
     } else {
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
         employee->IncreaseGrade(company->grade_bonus_new_employees);
-        assert(company->GetCompanyEmployees().check_is_valid());
+        assert(company->GetCompanyEmployees()->check_is_valid());
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(employee->GetGrade() * (-1));
         amountOfNewEmployees--;
@@ -85,7 +86,7 @@ void HighTech::RemoveEmployee(int EmployeeId) {
         assert(company->GetCompanyEmployees()->check_is_valid());
 
 
-        assert(company->GetCompanyEmployees().check_is_valid());
+        assert(company->GetCompanyEmployees()->check_is_valid());
     }
     newEmployees.DeleteById(EmployeeId); // this function also free the employee.
     assert(allEmployees.check_is_valid());
@@ -167,7 +168,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
         company->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));
     } else {
-        assert(company->GetCompanyEmployees().check_is_valid());
+        assert(company->GetCompanyEmployees()->check_is_valid());
         employee->IncreaseGrade(company->grade_bonus_new_employees);
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
@@ -175,7 +176,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGrade());
         amountOfNewEmployees--;
         totalOfGradeOfNewEmployees -= employee->GetGrade();
-        assert(company->GetCompanyEmployees().check_is_valid());
+        assert(company->GetCompanyEmployees()->check_is_valid());
     }
     employee->IncreaseSalary(SalaryIncrease);
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
@@ -223,8 +224,8 @@ void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {
 
 }
 
-void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int *sumBumpGrade) {
-    if (sumBumpGrade == NULL || m <= 0 || CompanyId < 0 || CompanyId > companies.GetK()) {
+void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
+    if (m <= 0 || CompanyId < 0 || CompanyId > companies.GetK()) {
         throw InvalidInput();
     }
     int totalSum = 0;
@@ -243,17 +244,17 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int 
             totalSum = allEmployees.SumGrades(m);
         }
     }
-    *sumBumpGrade = totalSum;
-    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int) *sumBumpGrade) << std::endl;
+    int sumBumpGrade = totalSum;
+    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int) sumBumpGrade) << std::endl;
     assert(allEmployees.check_is_valid());
     assert(companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->check_is_valid());
     WTF();
 
 }
 
-void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary,
-                                                    double *averageBumpGrade) {
-    if (averageBumpGrade == NULL || higherSalary < 0 || lowerSalary < 0 || higherSalary < lowerSalary ||
+void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary
+                                                    ) {
+    if (higherSalary < 0 || lowerSalary < 0 || higherSalary < lowerSalary ||
         CompanyId > companies.GetK() || CompanyId < 0) {
         assert(allEmployees.check_is_valid());
         throw InvalidInput();
@@ -290,11 +291,11 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-    *averageBumpGrade = totalSum / totalAmount;
-    if (*averageBumpGrade - (int) *averageBumpGrade < 1e-7) {
-        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << *averageBumpGrade << ".0" << std::endl;
+    double averageBumpGrade = totalSum / totalAmount;
+    if (averageBumpGrade - (int) averageBumpGrade < 1e-7) {
+        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << averageBumpGrade << ".0" << std::endl;
     } else {
-        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (double) ((int) (*averageBumpGrade * 10)) / 10.0
+        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (double) ((int) (averageBumpGrade * 10)) / 10.0
                   << std::endl;
     }
     assert(allEmployees.check_is_valid());
@@ -305,17 +306,17 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
 
 }
 
-void HighTech::CompanyValue(int CompanyId, double *standing) {
-    if (standing == NULL || CompanyId > companies.GetK() || CompanyId <= 0) {
+void HighTech::CompanyValue(int CompanyId) {
+    if (CompanyId > companies.GetK() || CompanyId <= 0) {
         assert(allEmployees.check_is_valid());
         throw InvalidInput();
     }
-    *standing = companies.GetCompanyValue(CompanyId); // O(log* k)
+    double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
     // for test only
-    if (*standing - (int) *standing < 1e-7) {
-        std::cout << "CompanyValue: " << *standing << ".0" << std::endl;
+    if (standing - (int) standing < 1e-7) {
+        std::cout << "CompanyValue: " << standing << ".0" << std::endl;
     } else {
-        std::cout << "CompanyValue: " << (int) ((*standing * 10)) / 10 << std::endl;
+        std::cout << "CompanyValue: " << (int) ((standing * 10)) / 10 << std::endl;
     }
     //
 

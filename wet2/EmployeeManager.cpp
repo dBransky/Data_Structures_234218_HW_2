@@ -22,7 +22,6 @@ bool Employee::IsSalaryInRange(int minSalary, int maxSalary) { return (salary >=
 bool Employee::IsSalaryBiggerThanZero() { return (salary > 0); }
 
 
-
 int Company::GetCompanyId() { return id; }
 
 double Company::GetCompanyValue() { return value; }
@@ -56,4 +55,9 @@ void Company::IncreaseTotalGradesOfNewEmployees(int amountToAdd) { totalGradesOf
 
 Company::~Company() {
     delete companyEmployees;
+}
+
+Company::Company(int id) : id(id), value(id), amountOfNewEmployees(0), amountOfEmployees(0),
+                           totalGradesOfNewEmployees(0),grade_bonus_new_employees(0) {
+    companyEmployees = new Map<Employee *, SalaryId>;
 }

@@ -33,9 +33,9 @@ public:
     void AcquireCompany(int AcquireId, int TargetId, double Factor);
     void EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease);
     void PromoteEmployee(int EmployeeId, int BumpGrade);
-    void SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int* sumBumpGrade);
-    void AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary, double* averageBumpGrade);
-    void CompanyValue(int CompanyId, double* standing);
+    void SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m);
+    void AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary);
+    void CompanyValue(int CompanyId);
 
     //Extra
     void BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade);

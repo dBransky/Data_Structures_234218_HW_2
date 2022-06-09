@@ -42,11 +42,10 @@ void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
     Employee *employee = new Employee(EmployeeId, Grade, 0, correctCompanyId);
     assert(employee != NULL);
     newEmployees.Insert(employee);
-    Company *company = companies.GetCorrectCompanyPosByConst(correctCompanyId);
     company->IncreaseAmountOfNewEmployees(1);
     company->IncreaseTotalGradesOfNewEmployees(Grade);
     amountOfNewEmployees++;
-    totalOfGradeOfNewEmployees += Grade;
+    totalOfGradeOfNewEmployees += (Grade);
     assert(allEmployees.check_is_valid());
     assert(company->GetCompanyEmployees()->check_is_valid());
     WTF();
@@ -77,6 +76,8 @@ void HighTech::RemoveEmployee(int EmployeeId) {
 
     } else {
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
+        employee->IncreaseGrade(company->grade_bonus_new_employees);
+        assert(company->GetCompanyEmployees().check_is_valid());
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(employee->GetGrade() * (-1));
         amountOfNewEmployees--;
@@ -84,6 +85,7 @@ void HighTech::RemoveEmployee(int EmployeeId) {
         assert(company->GetCompanyEmployees()->check_is_valid());
 
 
+        assert(company->GetCompanyEmployees().check_is_valid());
     }
     newEmployees.DeleteById(EmployeeId); // this function also free the employee.
     assert(allEmployees.check_is_valid());
@@ -165,12 +167,15 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
         company->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));
     } else {
+        assert(company->GetCompanyEmployees().check_is_valid());
+        employee->IncreaseGrade(company->grade_bonus_new_employees);
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGrade());
         amountOfNewEmployees--;
         totalOfGradeOfNewEmployees -= employee->GetGrade();
+        assert(company->GetCompanyEmployees().check_is_valid());
     }
     employee->IncreaseSalary(SalaryIncrease);
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
@@ -324,11 +329,14 @@ void HighTech::CompanyValue(int CompanyId, double *standing) {
 }
 
 
-
 //Extra
 
 void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade) {
-
+    for (int i = 0; i < companies.GetK(); ++i) {
+        Company* company=companies.GetCompanyById(i+1);
+        if(company->GetCompanyEmployees()==NULL)
+            continue;
+    }
 }
 
 

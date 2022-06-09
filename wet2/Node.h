@@ -24,6 +24,8 @@ public:
     int sum_grade;
     int grade_left;
     int grade_right;
+    int bonus_right;
+    int bonus_left;
 
     Node(Node<T, Key> *left, Node<T, Key> *right, Node<T, Key> *father,
          Pair<T, Key> pair);
@@ -36,7 +38,7 @@ public:
         } else {
             h_left = std::max(left->h_left, left->h_right) + 1;
             rank_left = left->rank;
-            grade_left = left->sum_grade;
+            grade_left = left->sum_grade+rank_left*bonus_left;
         }
 
         if (this->right == NULL) {
@@ -46,7 +48,7 @@ public:
         } else {
             h_right = std::max(right->h_right, right->h_left) + 1;
             rank_right = right->rank;
-            grade_right = right->sum_grade;
+            grade_right = right->sum_grade+rank_right*bonus_right;
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
@@ -65,6 +67,8 @@ Node<T, Key>::Node(Node<T, Key> *left, Node<T, Key> *right,
     h_right = 0;
     balance_factor = 0;
     rank = 1;
+    bonus_left=0;
+    bonus_right=0;
     this->UpdateParams();
 }
 

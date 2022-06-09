@@ -649,6 +649,7 @@ Pair<T, Key> *Map<T, Key>::GetObjectsFromKey(Key min_key, Key max_key, int *size
 
 template<class T, class Key>
 Map<T, Key>::~Map() {
+
     FreePostOrder(head);
 }
 

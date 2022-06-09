@@ -2,6 +2,7 @@
 
 UnionFind::UnionFind(int k)
 {
+    ItamarGlobal = 0;
     K = k;
     size = new int[k];
     parents = new int[k];
@@ -20,11 +21,6 @@ UnionFind::UnionFind(int k)
 
 double UnionFind::GetCompanyValue(int CompanyId)
 {
-    if (CompanyId == 5)
-    {
-        int x =  elements[CompanyId - 1]->GetCompanyValue();
-        int y = salaryIncrease[CompanyId - 1];
-    }
     double sum = elements[CompanyId - 1]->GetCompanyValue() + salaryIncrease[CompanyId - 1];
     int last = CompanyId;
     while (last != -1)
@@ -40,12 +36,19 @@ double UnionFind::GetCompanyValue(int CompanyId)
 
 int UnionFind::Find(int CompanyId)
 {
+   // PrintStatus();
+    if (CompanyId == 5 && ItamarGlobal >= 11)
+    {
+        int x = 5;
+    }
     int temp = CompanyId;
     int last = CompanyId;
     double sumR = 0;
+    double hack = 0;
     while (last != -1)
     {
         temp = last;
+        hack = salaryIncrease[temp - 1];
         last = parents[last - 1];
         if (last != -1)
         {
@@ -54,17 +57,20 @@ int UnionFind::Find(int CompanyId)
     }
     int targetCompany = temp;
     last = CompanyId;
-    while (last != -1)
+    while (last != -1 && targetCompany != CompanyId)
     {
         temp = last;
         last = parents[last - 1];
         if (last != -1 && last != targetCompany)
         {
             parents[temp - 1] = targetCompany;
-            sumR = sumR - salaryIncrease[temp - 1];
+            double save = sumR - salaryIncrease[temp - 1];
             salaryIncrease[temp - 1] = sumR;
+            sumR = save;
+
         }
     }
+
     return targetCompany;
 }
 
@@ -80,19 +86,16 @@ Company* UnionFind::GetCompanyById(int companyId)
 
 Company* UnionFind::GetCorrectCompanyPosByConst(int companyId)
 {
-    if (parents[companyId - 1] == -1)
-    {
-        return elementsPos[companyId - 1];
-    }
-    else
-    {
-        return elementsPos[parents[companyId - 1] - 1];
-    }
+        if (parents[companyId - 1] == -1) {
+            return elementsPos[companyId - 1];
+        } else {
+            return elementsPos[parents[companyId - 1] - 1];
+        }
 }
 
 void UnionFind::Union(int acquire, int target, double Factor)
 {
-    if (acquire == 19 && target == 7)
+    if (acquire == 19 && target == 18)
     {
         int x = 3;
     }
@@ -155,10 +158,12 @@ void UnionFind::PrintStatus()
     std::cout << parents[K - 1] << "]" << std::endl;
 
     std::cout << std::endl << "[ ";
+    /*
     for (int i = 0; i < K - 1; i++)
     {
-        std::cout << elements[i]->GetCompanyValue() << ",  ";
+        std::cout << GetCompanyValue(i + 1) << ",  ";
     }
-    std::cout << elements[K - 1]->GetCompanyValue() << "]" << std::endl;
+    std::cout << GetCompanyValue( K) << "]" << std::endl;
     std::cout << " ---------------------------------- " << std::endl << " ";
+     */
 }

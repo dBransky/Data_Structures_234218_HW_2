@@ -7,6 +7,7 @@
 class UnionFind
 {
 private:
+    int ItamarGlobal;
     int K;
     int* size;
     int* parents;

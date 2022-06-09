@@ -103,7 +103,6 @@ void UnionFind::Union(int acquire, int target, double Factor)
     salaryIncrease[realTarget - 1] = salaryIncrease[realTarget - 1] - amountToAdd - salaryIncrease[realAcquire - 1];
     salaryIncrease[realAcquire - 1] += amountToAdd;
     elementsPos[realTarget - 1] = elementsPos[realAcquire - 1];
-    PrintStatus();
 }
 
 

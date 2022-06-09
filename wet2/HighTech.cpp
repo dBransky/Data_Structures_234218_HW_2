@@ -31,7 +31,6 @@ HighTech::HighTech(int k) : amountOfNewEmployees(0), totalOfGradeOfNewEmployees(
 HighTech::~HighTech() {
     companies.FreeAll();
     newEmployees.FreeAll();
-    WTF();
 }
 
 void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
@@ -97,7 +96,6 @@ void HighTech::RemoveEmployee(int EmployeeId) {
 }
 
 void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
-    companies.PrintStatus();
     if (AcquireId <= 0 || AcquireId > companies.GetK() || TargetId <= 0 || TargetId > companies.GetK()) {
         assert(allEmployees.check_is_valid());
         throw InvalidInput();
@@ -142,7 +140,6 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
     assert(AcquireCompany->GetCompanyEmployees()->check_is_valid());
     WTF();
 
-    companies.PrintStatus();
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
@@ -297,7 +294,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     }
     else
     {
-        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (double) ((double)(*averageBumpGrade * 10)) / 10 << std::endl;
+        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (double) ((int)(*averageBumpGrade * 10)) / 10.0 << std::endl;
     }
     assert(allEmployees.check_is_valid());
     if (CompanyId != 0) {

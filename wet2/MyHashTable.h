@@ -191,8 +191,8 @@ public:
                 }
             }
         }
-        delete temp;
-                assert(IsHashTableIsValid() == true);
+        delete [] temp;
+            assert(IsHashTableIsValid() == true);
 
     }
 
@@ -226,8 +226,8 @@ public:
                 }
             }
         }
-        delete temp;
-                assert(IsHashTableIsValid() == true);
+        delete [] temp;
+            assert(IsHashTableIsValid() == true);
 
     }
 

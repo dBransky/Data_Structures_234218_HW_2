@@ -224,7 +224,17 @@ void HighTech::CompanyValue(int CompanyId, double *standing) {
         throw InvalidInput();
     }
     *standing = companies.GetCompanyValue(CompanyId); // O(log* k)
-    std::cout << "CompanyValue: " << *standing << std::endl;
+    // for test only
+        if (*standing - (int)*standing < 1e-7)
+        {
+            std::cout << "CompanyValue: " << *standing  << ".0" << std::endl;
+        }
+        else
+        {
+            std::cout << "CompanyValue: " << (int) ((*standing * 10)) / 10 << std::endl;
+        }
+    //
+
     assert(allEmployees.check_is_valid());
 }
 

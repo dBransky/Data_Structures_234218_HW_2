@@ -50,20 +50,23 @@ void HighTech::RemoveEmployee(int EmployeeId) {
         int correctCompany = companies.Find(employee->GetCompanyId());
         Company *company = companies.GetCorrectCompanyPosByConst(correctCompany);
         company->IncreaseAmountOfEmployees(-1);
+        assert(company->GetCompanyEmployees().check_is_valid());
         companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyEmployees().remove(SalaryId(employee->GetSalary(), EmployeeId));
+        assert(company->GetCompanyEmployees().check_is_valid());
         amountOfEmployeesWithSalaryBiggerThenZero--;
     } else {
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
+        assert(company->GetCompanyEmployees().check_is_valid());
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(employee->GetGrade() * (-1));
         amountOfNewEmployees--;
         totalOfGradeOfNewEmployees -= employee->GetGrade();
         assert(company->GetCompanyEmployees().check_is_valid());
 
+        assert(company->GetCompanyEmployees().check_is_valid());
     }
     newEmployees.DeleteById(EmployeeId); // this function also free the employee.
     assert(allEmployees.check_is_valid());
-
 }
 
 void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
@@ -98,10 +101,6 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
-    if (EmployeeId == 38 && SalaryIncrease == 12)
-    {
-        int x = 5;
-    }
     if (EmployeeId <= 0 || SalaryIncrease <= 0) {
        // assert(allEmployees.check_is_valid());
         throw InvalidInput();
@@ -115,15 +114,20 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
     assert(company->GetCompanyEmployees().check_is_valid());
     if (employee->GetSalary() != 0) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
+        assert(company->GetCompanyEmployees().check_is_valid());
         company->GetCompanyEmployees().remove(SalaryId(employee->GetSalary(), EmployeeId));
+        assert(company->GetCompanyEmployees().check_is_valid());
     } else {
+        assert(company->GetCompanyEmployees().check_is_valid());
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGrade());
         amountOfNewEmployees--;
         totalOfGradeOfNewEmployees -= employee->GetGrade();
+        assert(company->GetCompanyEmployees().check_is_valid());
     }
+    assert(company->GetCompanyEmployees().check_is_valid());
     newEmployees.FindById(EmployeeId)->IncreaseSalary(SalaryIncrease);
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
     assert(company->GetCompanyEmployees().check_is_valid());
@@ -239,6 +243,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
         std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (int) ((*averageBumpGrade * 10)) / 10 << std::endl;
     }
     assert(allEmployees.check_is_valid());
+    if(CompanyId!=0)
+        assert(companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees().check_is_valid());
 }
 
 void HighTech::CompanyValue(int CompanyId, double *standing) {
@@ -260,7 +266,6 @@ void HighTech::CompanyValue(int CompanyId, double *standing) {
 
     assert(allEmployees.check_is_valid());
 }
-
 
 
 //Extra

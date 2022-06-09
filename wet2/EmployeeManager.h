@@ -66,6 +66,7 @@ private:
 
 public:
     Company(int id);
+    ~Company();
     int GetCompanyId();
     double GetCompanyValue();
     int GetCompanyAmountOfEmployees();

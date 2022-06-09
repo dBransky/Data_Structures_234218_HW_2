@@ -33,3 +33,7 @@ int Company::GetAmountOfNewEmployees() { return amountOfNewEmployees; }
 int Company::GetTotalGradeOfNewEmployees() { return totalGradesOfNewEmployees; }
 void Company::IncreaseAmountOfNewEmployees(int amountToAdd) { amountOfNewEmployees += amountToAdd; }
 void Company::IncreaseTotalGradesOfNewEmployees(int amountToAdd) { totalGradesOfNewEmployees += amountToAdd; }
+
+Company::~Company() {
+    delete companyEmployees;
+}

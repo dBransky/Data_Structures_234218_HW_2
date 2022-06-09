@@ -27,7 +27,6 @@ HighTech::HighTech(int k) : amountOfNewEmployees(0), totalOfGradeOfNewEmployees(
 
 HighTech::~HighTech() {
     companies.FreeAll();
-    newEmployees.FreeAll();
 }
 
 void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {

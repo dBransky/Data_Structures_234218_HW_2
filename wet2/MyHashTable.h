@@ -263,9 +263,7 @@ public:
 
     ~HashTable() {
         for (int i = 0; i < arraySize; i++) {
-            if (employees[i] != NULL) {
-                delete employees[i];
-            }
+            delete employees[i];
         }
         delete[] employees;
     }

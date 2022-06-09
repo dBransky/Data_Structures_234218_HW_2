@@ -13,7 +13,7 @@ private:
 public:
     MyNode(Employee* employee, MyNode* next = NULL) : value(employee), next(next) {};
     Employee* GetValue() { return value; }
-    Employee* SetValueToNull() { value = NULL; }
+    void SetValueToNull() { value = NULL; }
     MyNode* GetNext() { return next; }
     void SetNext(MyNode* newNext) { next = newNext; }
 };

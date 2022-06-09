@@ -22,7 +22,9 @@ void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
         throw Failure();
     }
     int correctCompanyId = companies.Find(CompanyId); // O(log* k)
-    newEmployees.Insert(new Employee(EmployeeId, Grade, 0, correctCompanyId));
+    Employee* employee = new Employee(EmployeeId, Grade, 0, correctCompanyId);
+    assert(employee != NULL);
+    newEmployees.Insert(employee);
     Company *company = companies.GetCorrectCompanyPosByConst(correctCompanyId);
     company->IncreaseAmountOfNewEmployees(1);
     company->IncreaseTotalGradesOfNewEmployees(Grade);
@@ -111,11 +113,11 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGrade());
         amountOfNewEmployees--;
-        totalOfGradeOfNewEmployees -= employee->GetSalary();
+        totalOfGradeOfNewEmployees -= employee->GetGrade();
     }
     newEmployees.FindById(EmployeeId)->IncreaseSalary(SalaryIncrease);
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
-    company->GetCompanyEmployees().insert(SalaryId(employee->GetSalary(), EmployeeId),employee);
+    company->GetCompanyEmployees().insert(SalaryId(employee->GetSalary() , EmployeeId),employee);
 }
 
 void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {

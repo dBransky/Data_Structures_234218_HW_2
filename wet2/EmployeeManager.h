@@ -62,7 +62,7 @@ private:
     int amountOfEmployees;
     int amountOfNewEmployees;
     int totalGradesOfNewEmployees;
-    Map<Employee*, SalaryId> companyEmployees;
+    Map<Employee*, SalaryId>* companyEmployees;
 
 public:
     Company(int id);
@@ -72,7 +72,9 @@ public:
     void IncreaseValue(double add);
     void SetTotalValue(double newValue);
     void IncreaseAmountOfEmployees(int addAmount);
-    Map<Employee *, SalaryId>& GetCompanyEmployees();
+    void SetCompanyEmployeesToNull();
+    void SetCompanyEmployees(Map<Employee*, SalaryId>* NewcompanyEmployees);
+    Map<Employee *, SalaryId>* GetCompanyEmployees();
     int GetAmountOfNewEmployees();
     int GetTotalGradeOfNewEmployees();
     void IncreaseAmountOfNewEmployees(int amountToAdd);

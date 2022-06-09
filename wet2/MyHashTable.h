@@ -113,6 +113,20 @@ public:
             std::cout << ptr->GetValue()->GetEmployeeId() << std::endl;
         }
     }
+
+    bool ListIsValid()
+    {
+        MyNode* ptr = head;
+        while (ptr != NULL)
+        {
+            if (ptr->GetValue() == NULL)
+            {
+                return false;
+            }
+            ptr = ptr->GetNext();
+        }
+        return true;
+    }
 };
 
 class HashTable
@@ -129,6 +143,8 @@ private:
 public:
     HashTable()
     {
+            assert(IsHashTableIsValid() == true);
+
         employees = new MyList*[starting_length];
         for (int i = 0; i < starting_length; i++)
         {
@@ -136,15 +152,21 @@ public:
         }
         arraySize = starting_length;
         currentAmount = 0;
+                assert(IsHashTableIsValid() == true);
+
     }
 
     int GetHashKey(int id) const
     {
+
         return id % arraySize;
+
     }
 
     void ExpandSize()
     {
+            assert(IsHashTableIsValid() == true);
+
         MyList** new_array = new MyList*[arraySize * expand_factor];
         for (int i = 0; i < arraySize * expand_factor; i++)
         {
@@ -170,10 +192,14 @@ public:
             }
         }
         delete temp;
+                assert(IsHashTableIsValid() == true);
+
     }
 
     void ReduceSize()
     {
+            assert(IsHashTableIsValid() == true);
+
         MyList** new_array = new MyList*[arraySize / expand_factor];
         for (int i = 0; i < arraySize / expand_factor; i++)
         {
@@ -201,6 +227,8 @@ public:
             }
         }
         delete temp;
+                assert(IsHashTableIsValid() == true);
+
     }
 
     bool Insert(Employee* employee)
@@ -210,6 +238,8 @@ public:
         bool exist = employees[key]->IsExist(id);
         if (exist)
         {
+                assert(IsHashTableIsValid() == true);
+
             return false;
         }
         else
@@ -220,6 +250,8 @@ public:
             }
             employees[key]->InsertAtBeginning(employee);
             currentAmount++;
+                    assert(IsHashTableIsValid() == true);
+
             return true;
         }
     }
@@ -236,23 +268,33 @@ public:
             {
                 ReduceSize();
             }
+                    assert(IsHashTableIsValid() == true);
+
             return true;
         }
         else
         {
+                assert(IsHashTableIsValid() == true);
+
             return false;
         }
+
     }
 
     void DeleteByEmployee(Employee* employee)
     {
+            assert(IsHashTableIsValid() == true);
+
         DeleteById(employee->GetEmployeeId());
+
     }
 
     Employee* FindById(int id)
     {
         int index = GetHashKey(id);
+        assert(IsHashTableIsValid() == true);
         return employees[index]->FindInlist(id);
+
     }
 
     void FreeAll()
@@ -273,6 +315,22 @@ public:
         {
             employees[i]->PrintList();
         }
+    }
+
+
+    bool IsHashTableIsValid()
+    {
+            for (int i = 0; i < arraySize; i++)
+            {
+                if (employees[i] != NULL)
+                {
+                    if (!employees[i]->ListIsValid())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
     }
 };
 

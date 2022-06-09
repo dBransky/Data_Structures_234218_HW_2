@@ -31,7 +31,7 @@ template<class T, class Key>
 class Map {
 private:
     Node<T, Key> *head;
-    int amount;
+
 
     Node<T, Key> *GetNode(Node<T, Key> *node, Key key) {
         if (node == NULL)
@@ -273,6 +273,10 @@ private:
     bool is_valid(Node<T, Key> *node) {
         if (node == NULL)
             return true;
+         if (node->pair.element == NULL)
+         {
+              return false;
+         }
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
         if(node->left)
@@ -290,6 +294,33 @@ private:
 
     }
 
+ bool is_valid2(Node<T, Key> *node, int companyId) {
+        if (node == NULL)
+            return true;
+         if (node->pair.element == NULL)
+         {
+              return false;
+         }
+         if (node->pair.element->GetCompanyId() != companyId)
+         {
+            return false;
+         }
+        bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
+        bool left_valid;
+        if(node->left)
+            left_valid=(node->grade_left==node->left->sum_grade);
+        else
+            left_valid=(node->grade_left==0);
+        bool right_valid;
+        if(node->right)
+            right_valid=(node->grade_right==node->right->sum_grade);
+        else
+            right_valid=(node->grade_right==0);
+
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
+        return loop_free && valid_grade;
+
+    }
 
 
     void NULLInorder(Node<T, Key> *node) {
@@ -394,6 +425,7 @@ private:
     }
 
 public:
+int amount;
     Map();
 
     ~Map();
@@ -422,6 +454,8 @@ public:
 
     int AmountMinMax(Key top, Key bottom);
     bool check_is_valid();
+        bool check_is_valid2(int companyId);
+
 };
 
 template<class T, class Key>
@@ -692,6 +726,11 @@ int Map<T, Key>::SumMinMax(Key top, Key bottom) {
 template<class T, class Key>
 bool Map<T, Key>::check_is_valid() {
     return is_valid(head);
+}
+
+template<class T, class Key>
+bool Map<T, Key>::check_is_valid2(int companyId) {
+    return is_valid2(head, companyId);
 }
 
 #endif //DATA_STRUCTURES_234218_Map_H

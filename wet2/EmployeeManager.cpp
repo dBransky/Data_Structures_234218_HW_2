@@ -13,14 +13,22 @@ bool Employee::IsSalaryBiggerThanZero() { return (salary > 0); }
 
 
 
-Company::Company(int id) : id(id), value(id), amountOfEmployees(0), amountOfNewEmployees(0), totalGradesOfNewEmployees(0), companyEmployees() {};
+Company::Company(int id) : id(id), value(id), amountOfEmployees(0), amountOfNewEmployees(0), totalGradesOfNewEmployees(0) {
+    companyEmployees = new Map<Employee*, SalaryId>();
+};
 int Company::GetCompanyId() { return id; }
 double Company::GetCompanyValue() { return value; }
 int Company::GetCompanyAmountOfEmployees() { return amountOfEmployees; }
 void Company::IncreaseValue(double add) { value += add; }
 void Company::SetTotalValue(double newValue) { value = newValue; }
+void Company::SetCompanyEmployeesToNull() { companyEmployees = NULL;}
+void Company::SetCompanyEmployees(Map<Employee*, SalaryId>* NewcompanyEmployees)
+{
+    companyEmployees = NewcompanyEmployees;
+};
+
 void Company::IncreaseAmountOfEmployees(int addAmount) { amountOfEmployees += addAmount; }
-Map<Employee *, SalaryId>& Company::GetCompanyEmployees() { return companyEmployees; }
+Map<Employee *, SalaryId>* Company::GetCompanyEmployees() { return companyEmployees; }
 int Company::GetAmountOfNewEmployees() { return amountOfNewEmployees; }
 int Company::GetTotalGradeOfNewEmployees() { return totalGradesOfNewEmployees; }
 void Company::IncreaseAmountOfNewEmployees(int amountToAdd) { amountOfNewEmployees += amountToAdd; }

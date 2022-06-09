@@ -80,11 +80,22 @@ Company* UnionFind::GetCompanyById(int companyId)
 
 Company* UnionFind::GetCorrectCompanyPosByConst(int companyId)
 {
-    return elementsPos[companyId - 1];
+    if (parents[companyId - 1] == -1)
+    {
+        return elementsPos[companyId - 1];
+    }
+    else
+    {
+        return elementsPos[parents[companyId - 1] - 1];
+    }
 }
 
 void UnionFind::Union(int acquire, int target, double Factor)
 {
+    if (acquire == 19 && target == 7)
+    {
+        int x = 3;
+    }
     int realAcquire = Find(acquire);
     int realTarget = Find(target);
     double amountToAdd = GetCompanyValue(realTarget) * Factor;
@@ -92,6 +103,7 @@ void UnionFind::Union(int acquire, int target, double Factor)
     salaryIncrease[realTarget - 1] = salaryIncrease[realTarget - 1] - amountToAdd - salaryIncrease[realAcquire - 1];
     salaryIncrease[realAcquire - 1] += amountToAdd;
     elementsPos[realTarget - 1] = elementsPos[realAcquire - 1];
+    PrintStatus();
 }
 
 

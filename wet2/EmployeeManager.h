@@ -65,6 +65,7 @@ private:
     Map<Employee*, SalaryId> companyEmployees;
 
 public:
+    int grade_bonus_new_employees;
     Company(int id);
     int GetCompanyId();
     double GetCompanyValue();
@@ -77,6 +78,7 @@ public:
     int GetTotalGradeOfNewEmployees();
     void IncreaseAmountOfNewEmployees(int amountToAdd);
     void IncreaseTotalGradesOfNewEmployees(int amountToAdd);
+
 };
 
 

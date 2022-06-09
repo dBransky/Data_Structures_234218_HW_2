@@ -122,6 +122,7 @@ private:
     int arraySize;
     int currentAmount;
 
+
     static const int load_factor = 4;
     static const int expand_factor = 2;
     static const int starting_length = 2;

@@ -22,14 +22,14 @@ void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
         throw Failure();
     }
     int correctCompanyId = companies.Find(CompanyId); // O(log* k)
-    Employee* employee = new Employee(EmployeeId, Grade, 0, correctCompanyId);
+    Company *company = companies.GetCorrectCompanyPosByConst(correctCompanyId);
+    Employee* employee = new Employee(EmployeeId, Grade-company->grade_bonus_new_employees, 0, correctCompanyId);
     assert(employee != NULL);
     newEmployees.Insert(employee);
-    Company *company = companies.GetCorrectCompanyPosByConst(correctCompanyId);
     company->IncreaseAmountOfNewEmployees(1);
     company->IncreaseTotalGradesOfNewEmployees(Grade);
     amountOfNewEmployees++;
-    totalOfGradeOfNewEmployees += Grade;
+    totalOfGradeOfNewEmployees += (Grade);
     assert(allEmployees.check_is_valid());
     assert(company->GetCompanyEmployees().check_is_valid());
 
@@ -56,6 +56,7 @@ void HighTech::RemoveEmployee(int EmployeeId) {
         amountOfEmployeesWithSalaryBiggerThenZero--;
     } else {
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
+        employee->IncreaseGrade(company->grade_bonus_new_employees);
         assert(company->GetCompanyEmployees().check_is_valid());
         company->IncreaseAmountOfNewEmployees(-1);
         company->IncreaseTotalGradesOfNewEmployees(employee->GetGrade() * (-1));
@@ -119,6 +120,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         assert(company->GetCompanyEmployees().check_is_valid());
     } else {
         assert(company->GetCompanyEmployees().check_is_valid());
+        employee->IncreaseGrade(company->grade_bonus_new_employees);
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
@@ -271,7 +273,11 @@ void HighTech::CompanyValue(int CompanyId, double *standing) {
 //Extra
 
 void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade) {
-
+    for (int i = 0; i < companies.GetK(); ++i) {
+        Company* company=companies.GetCompanyById(i+1);
+        if(company->GetCompanyEmployees()==NULL)
+            continue;
+    }
 }
 
 

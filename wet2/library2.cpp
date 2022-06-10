@@ -106,10 +106,10 @@ StatusType PromoteEmployee(void *DS, int EmployeeID, int BumpGrade) {
     return SUCCESS;
 }
 
-StatusType SumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m, void* sumBumpGrade) {
+StatusType SumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m) {
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->SumOfBumpGradeBetweenTopWorkersByGroup(CompanyID, m, static_cast<int *>(sumBumpGrade));
+        ((HighTech *) DS)->SumOfBumpGradeBetweenTopWorkersByGroup(CompanyID, m);
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -123,11 +123,10 @@ StatusType SumOfBumpGradeBetweenTopWorkersByGroup(void *DS, int CompanyID, int m
     return SUCCESS;
 }
 
-StatusType AverageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int lowerSalary, int higherSalary, void* averageBumpGrade) {
+StatusType AverageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int lowerSalary, int higherSalary) {
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->AverageBumpGradeBetweenSalaryByGroup(CompanyID, lowerSalary, higherSalary,
-                                                                static_cast<double *>(averageBumpGrade));
+        ((HighTech *) DS)->AverageBumpGradeBetweenSalaryByGroup(CompanyID, lowerSalary, higherSalary);
     }
     catch (InvalidInput) {
         return INVALID_INPUT;
@@ -141,11 +140,11 @@ StatusType AverageBumpGradeBetweenSalaryByGroup(void *DS, int CompanyID, int low
     return SUCCESS;
 }
 
-StatusType CompanyValue(void *DS, int companyID, void *standing)
+StatusType CompanyValue(void *DS, int companyID)
 {
     if (DS == NULL) return INVALID_INPUT;
     try {
-        ((HighTech *) DS)->CompanyValue(companyID, static_cast<double *>(standing));
+        ((HighTech *) DS)->CompanyValue(companyID);
     }
     catch (InvalidInput) {
         return INVALID_INPUT;

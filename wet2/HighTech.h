@@ -1,7 +1,6 @@
-
-
 #ifndef UNTITLED61_HIGHTECH_H
 #define UNTITLED61_HIGHTECH_H
+
 #include "EmployeeManager.h"
 #include "MyHashTable.h"
 #include "MyUnionFind.h"
@@ -27,15 +26,14 @@ private:
 public:
     HighTech(int k);
     ~HighTech();
-    void WTF();
     void AddEmployee(int EmployeeId, int CompanyId, int Grade);
     void RemoveEmployee(int EmployeeId);
     void AcquireCompany(int AcquireId, int TargetId, double Factor);
     void EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease);
     void PromoteEmployee(int EmployeeId, int BumpGrade);
-    void SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m, int* sumBumpGrade);
-    void AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary, double* averageBumpGrade);
-    void CompanyValue(int CompanyId, double* standing);
+    void SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m);
+    void AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary);
+    void CompanyValue(int CompanyId);
 
     //Extra
     void BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade);

@@ -7,27 +7,24 @@
 class UnionFind
 {
 private:
-    int ItamarGlobal;
     int K;
     int* size;
     int* parents;
     double* salaryIncrease;
     Company** elements;
-    Company** elementsPos;
 
 public:
     UnionFind(int k);
+    ~UnionFind();
     int Find(int CompanyId);
-    Company* GetCompany(int CompanyId);
-    Company* GetCompanyById(int companyId);
     double GetCompanyValue(int CompanyId);
     Company* GetCorrectCompanyPosByConst(int CompanyId);
-    void Itamar(int companyId, double value);
     void Union(int acquire, int target, double Factor);
-    void FreeAll();
     int GetK();
+
+    // Delete In And
+    void Itamar(int companyId, double value);
     void PrintStatus();
 };
-
 
 #endif

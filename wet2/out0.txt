@@ -1,4 +1,3 @@
-C:\Users\itamar\CLionProjects\untitled65\cmake-build-debug\untitled65.exe
 Init done.
 AddEmployee: SUCCESS
 AddEmployee: SUCCESS
@@ -2675,5 +2674,3 @@ PromoteEmployee: SUCCESS
 PromoteEmployee: SUCCESS
 EmployeeSalaryIncrease: SUCCESS
 Quit done.
-
-Process finished with exit code 0

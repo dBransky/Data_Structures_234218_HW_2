@@ -4,6 +4,8 @@
 #include "EmployeeManager.h"
 #include <iostream>
 
+static int itamar_check = 0;
+
 class MyNode
 {
 private:
@@ -23,27 +25,46 @@ class MyList
 private:
     MyNode* head;
 public:
-    MyList() { head = NULL; }
-    void DeleteAllList()
+    MyList()
     {
-            MyNode* ptr = head;
-            MyNode* temp = ptr;
-            while (ptr != NULL)
-            {
-                delete(ptr->GetValue());
-                ptr = ptr->GetNext();
-                delete(temp);
-                temp = ptr;
-            }
+        head = NULL;
+    }
+    int DeleteAllList()
+    {
+        int total = 0;
+        MyNode* ptr = head;
+        MyNode* temp = ptr;
+        while (ptr != NULL)
+        {
+           delete ptr->GetValue();
+            itamar_check--;
+           ptr = ptr->GetNext();
+           delete temp;
+           itamar_check--;
+           temp = ptr;
+           total++;
+        }
+        return total;
     }
     ~MyList()
     {
-
+        MyNode* ptr = head;
+        MyNode* temp = ptr;
+        while (ptr != NULL)
+        {
+           delete(ptr->GetValue());
+           itamar_check--;
+           ptr = ptr->GetNext();
+           delete(temp);
+           itamar_check--;
+           temp = ptr;
+        }
     }
 
     void InsertAtBeginning(Employee* newEmployee)
     {
         head = new MyNode(newEmployee, head);
+        itamar_check += 2;
     }
     void DeleteFromList(int id)
     {
@@ -52,8 +73,10 @@ public:
             MyNode* temp = head;
             head = head->GetNext();
             delete(temp->GetValue());
+            itamar_check--;
             temp->SetNext(NULL);
             delete(temp);
+            itamar_check--;
         }
         else
         {
@@ -67,8 +90,10 @@ public:
                     temp = ptr->GetNext();
                     ptr->SetNext(ptr->GetNext()->GetNext());
                     delete(temp->GetValue());
+                    itamar_check--;
                     temp->SetNext(NULL);
                     delete(temp);
+                    itamar_check--;
                     found = true;
                 }
                 else
@@ -140,41 +165,69 @@ private:
     int arraySize;
     int currentAmount;
 
-    static const int load_factor = 4;
+
+
+    static const int load_factor = 10;
     static const int expand_factor = 2;
     static const int starting_length = 2;
 
 public:
+    //for test only
+    int totalAmount;
+    int totalAmountDeleted;
+
+     int totalAmount222;
+    int  totalAmountDeleted222;
     HashTable()
     {
-            assert(IsHashTableIsValid() == true);
-
         employees = new MyList*[starting_length];
+        itamar_check++;
         for (int i = 0; i < starting_length; i++)
         {
             employees[i] = new MyList();
+            itamar_check++;
         }
         arraySize = starting_length;
         currentAmount = 0;
-                assert(IsHashTableIsValid() == true);
+
+        // for test only
+        totalAmount = 0;
+        totalAmountDeleted = 0;
+        totalAmount222 = 0;
+        totalAmountDeleted222 = 0;
 
     }
 
+     ~HashTable()
+      {
+          for (int i = 0; i < arraySize; i++)
+          {
+              if (employees[i] != NULL)
+              {
+                int x = employees[i]->DeleteAllList();
+                  totalAmountDeleted += x;
+                  totalAmountDeleted222 += x;
+              }
+          }
+          delete[] employees;
+          itamar_check--;
+          assert (totalAmount == totalAmountDeleted);
+          assert (totalAmountDeleted222 == totalAmount222);
+      }
+
     int GetHashKey(int id) const
     {
-
         return id % arraySize;
-
     }
 
     void ExpandSize()
     {
-            assert(IsHashTableIsValid() == true);
-
         MyList** new_array = new MyList*[arraySize * expand_factor];
+        itamar_check++;
         for (int i = 0; i < arraySize * expand_factor; i++)
         {
             new_array[i] = new MyList();
+            itamar_check++;
         }
         int original_size = arraySize;
         MyList** temp = employees;
@@ -193,22 +246,25 @@ public:
                     ptrDoDelete->SetValueToNull();
                 }
             }
-            temp[i]->DeleteAllList();
+            int x = temp[i]->DeleteAllList();
+            totalAmountDeleted +=x;
+            totalAmountDeleted222 +=x;
             delete(temp[i]);
+            itamar_check--;
+
         }
         delete[] temp;
-                assert(IsHashTableIsValid() == true);
-
+        itamar_check--;
     }
 
     void ReduceSize()
     {
-            assert(IsHashTableIsValid() == true);
-
         MyList** new_array = new MyList*[arraySize / expand_factor];
+        itamar_check++;
         for (int i = 0; i < arraySize / expand_factor; i++)
         {
             new_array[i] = new MyList();
+            itamar_check++;
         }
         int original_size = arraySize;
         MyList** temp = employees;
@@ -229,12 +285,14 @@ public:
                     }
                 }
             }
-             temp[i]->DeleteAllList();
-             delete(temp[i]);
+            int x = temp[i]->DeleteAllList();
+            totalAmountDeleted +=x;
+            totalAmountDeleted222 +=x;
+            delete(temp[i]);
+            itamar_check--;
         }
         delete[] temp;
-                assert(IsHashTableIsValid() == true);
-
+        itamar_check--;
     }
 
     bool Insert(Employee* employee)
@@ -244,8 +302,6 @@ public:
         bool exist = employees[key]->IsExist(id);
         if (exist)
         {
-                assert(IsHashTableIsValid() == true);
-
             return false;
         }
         else
@@ -256,8 +312,9 @@ public:
             }
             employees[key]->InsertAtBeginning(employee);
             currentAmount++;
-                    assert(IsHashTableIsValid() == true);
-
+            // for test only
+            totalAmount++;
+            totalAmount222++;
             return true;
         }
     }
@@ -274,14 +331,14 @@ public:
             {
                 ReduceSize();
             }
-                    assert(IsHashTableIsValid() == true);
+            // for test only
+            totalAmountDeleted++;
+            totalAmountDeleted222++;
 
             return true;
         }
         else
         {
-                assert(IsHashTableIsValid() == true);
-
             return false;
         }
 
@@ -289,30 +346,13 @@ public:
 
     void DeleteByEmployee(Employee* employee)
     {
-            assert(IsHashTableIsValid() == true);
-
         DeleteById(employee->GetEmployeeId());
-
     }
 
     Employee* FindById(int id)
     {
         int index = GetHashKey(id);
-        assert(IsHashTableIsValid() == true);
         return employees[index]->FindInlist(id);
-
-    }
-
-    void FreeAll()
-    {
-        for (int i = 0; i < arraySize; i++)
-        {
-            if (employees[i] != NULL)
-            {
-                delete employees[i];
-            }
-        }
-        delete[] employees;
     }
 
     void PrintHash()

@@ -27,6 +27,10 @@ Company::Company(int id) : id(id), value(id), amountOfEmployees(0), amountOfNewE
     companyEmployees = new Map<Employee *, SalaryId>();
 };
 
+Company::~Company() {
+    delete companyEmployees;
+}
+
 int Company::GetCompanyId() { return id; }
 
 double Company::GetCompanyValue() { return value; }
@@ -36,11 +40,6 @@ int Company::GetCompanyAmountOfEmployees() { return amountOfEmployees; }
 void Company::IncreaseValue(double add) { value += add; }
 
 void Company::SetTotalValue(double newValue) { value = newValue; }
-
-void Company::SetCompanyEmployeesToNull() {
-    delete companyEmployees;
-    companyEmployees = NULL;
-}
 
 void Company::SetCompanyEmployees(Map<Employee *, SalaryId> *NewcompanyEmployees) {
     companyEmployees = NewcompanyEmployees;
@@ -58,6 +57,4 @@ void Company::IncreaseAmountOfNewEmployees(int amountToAdd) { amountOfNewEmploye
 
 void Company::IncreaseTotalGradesOfNewEmployees(int amountToAdd) { totalGradesOfNewEmployees += amountToAdd; }
 
-Company::~Company() {
-    delete companyEmployees;
-}
+

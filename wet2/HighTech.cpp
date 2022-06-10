@@ -220,10 +220,10 @@ void HighTech::CompanyValue(int CompanyId) {
         }
         else
         {
-            std::cout << "CompanyValue: " << (int)(((standing + 1e-5 * 10)) / 10) << std::endl;
+            int value = (int)(standing * 10 + 1e-4);
+            std::cout << "CompanyValue: " << value / 10 << "." << (value % 10) << std::endl;
         }
 }
-
 
 
 //Extra

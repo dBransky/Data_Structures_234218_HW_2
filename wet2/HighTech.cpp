@@ -199,8 +199,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     }
     else
     {
-        int check = (int)(averageBumpGrade * 10);
-        if (check % 10 == 0)
+        int check = (int)(averageBumpGrade * 10 + 1e-4);
+        if ((check) % 10 == 0)
         {
             std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << check / 10 << ".0" << std::endl;
         }

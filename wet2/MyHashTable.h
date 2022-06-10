@@ -156,7 +156,7 @@ private:
     int currentAmount;
 
 
-
+    static const int free_factor = 3;
     static const int load_factor = 10;
     static const int expand_factor = 2;
     static const int starting_length = 2;
@@ -212,12 +212,11 @@ public:
 
     void ExpandSize()
     {
+        PrintHash();
         MyList** new_array = new MyList*[arraySize * expand_factor];
-        itamar_check++;
         for (int i = 0; i < arraySize * expand_factor; i++)
         {
             new_array[i] = new MyList();
-            itamar_check++;
         }
         int original_size = arraySize;
         MyList** temp = employees;
@@ -225,6 +224,8 @@ public:
         arraySize = arraySize * expand_factor;
         MyNode* ptr;
         MyNode* ptrDoDelete;
+        currentAmount = 0;
+        int counter = 0;
         for (int i = 0; i < original_size ; i++)
         {
             if (temp[i]->GetFirstNode() != NULL) {
@@ -232,63 +233,60 @@ public:
                 while (ptr != NULL) {
                     ptrDoDelete = ptr;
                     Insert(ptr->GetValue());
+                    counter++;
                     ptr = ptr->GetNext();
                     ptrDoDelete->SetValueToNull();
                 }
             }
-            int x = temp[i]->DeleteAllList();
-            totalAmountDeleted +=x;
-            totalAmountDeleted222 +=x;
+            temp[i]->DeleteAllList();
             delete(temp[i]);
-            itamar_check--;
 
         }
         delete[] temp;
-        itamar_check--;
+        PrintHash();
     }
 
     void ReduceSize()
     {
         MyList** new_array = new MyList*[arraySize / expand_factor];
-        itamar_check++;
         for (int i = 0; i < arraySize / expand_factor; i++)
         {
             new_array[i] = new MyList();
-            itamar_check++;
         }
         int original_size = arraySize;
         MyList** temp = employees;
         employees = new_array;
         arraySize = arraySize / expand_factor;
+        currentAmount = 0;
         MyNode* ptr;
         MyNode* ptrDoDelete;
+        int counter = 0;
         for (int i = 0; i < original_size ; i++)
         {
             if (temp[i] != NULL) {
-                if (temp[i]->GetFirstNode() != NULL) {
+                if (temp[i]->GetFirstNode() != NULL)
+                {
                     ptr = temp[i]->GetFirstNode();
                     while (ptr != NULL) {
                         ptrDoDelete = ptr;
                         Insert(ptr->GetValue());
+                        counter++;
                         ptr = ptr->GetNext();
                         ptrDoDelete->SetValueToNull();
                     }
                 }
             }
-            int x = temp[i]->DeleteAllList();
-            totalAmountDeleted +=x;
-            totalAmountDeleted222 +=x;
+            temp[i]->DeleteAllList();
             delete(temp[i]);
-            itamar_check--;
         }
         delete[] temp;
-        itamar_check--;
     }
 
     bool Insert(Employee* employee)
     {
         int id = employee->GetEmployeeId();
-        int key = GetHashKey(id);
+            int key = GetHashKey(id);
+
         bool exist = employees[key]->IsExist(id);
         if (exist)
         {
@@ -300,13 +298,12 @@ public:
             {
                 ExpandSize();
             }
+            key = GetHashKey(id);
             employees[key]->InsertAtBeginning(employee);
             currentAmount++;
-            // for test only
-            totalAmount++;
-            totalAmount222++;
             return true;
         }
+
     }
 
     bool DeleteById(int id)
@@ -315,23 +312,16 @@ public:
         bool exist = employees[key]->IsExist(id);
         if (exist)
         {
+            key = GetHashKey(id);
             employees[key]->DeleteFromList(id);
             currentAmount--;
-            if (currentAmount / load_factor <= arraySize && arraySize >= starting_length)
+            if (currentAmount <= arraySize * free_factor && arraySize >= starting_length)
             {
                 ReduceSize();
             }
-            // for test only
-            totalAmountDeleted++;
-            totalAmountDeleted222++;
-
             return true;
         }
-        else
-        {
-            return false;
-        }
-
+        return false;
     }
 
     void DeleteByEmployee(Employee* employee)
@@ -356,6 +346,7 @@ public:
 
     bool IsHashTableIsValid()
     {
+            MyNode* ptr;
             for (int i = 0; i < arraySize; i++)
             {
                 if (employees[i] != NULL)
@@ -364,9 +355,26 @@ public:
                     {
                         return false;
                     }
+                    if (employees[i] != NULL)
+                    {
+                      if (employees[i]->GetFirstNode() != NULL)
+                      {
+                           ptr = employees[i]->GetFirstNode();
+                           while (ptr != NULL)
+                           {
+                              assert (ptr->GetValue()->GetEmployeeId() % arraySize == i);
+                              ptr = ptr->GetNext();
+                            }
+                      }
+                    }
                 }
             }
             return true;
+    }
+
+    int GetArraySize()
+    {
+        return arraySize;
     }
 };
 

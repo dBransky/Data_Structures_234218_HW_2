@@ -90,7 +90,6 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
     Employee *employee = newEmployees.FindById(EmployeeId);
     employee->SetCompany(companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyId());
     Company* company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
-    Company* test = companies.GetCorrectCompanyPosByConst(18);
     if (employee->GetSalary() != 0) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
         company->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));

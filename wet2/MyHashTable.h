@@ -212,7 +212,6 @@ public:
 
     void ExpandSize()
     {
-        PrintHash();
         MyList** new_array = new MyList*[arraySize * expand_factor];
         for (int i = 0; i < arraySize * expand_factor; i++)
         {
@@ -243,7 +242,6 @@ public:
 
         }
         delete[] temp;
-        PrintHash();
     }
 
     void ReduceSize()

@@ -44,21 +44,11 @@ public:
            temp = ptr;
            total++;
         }
+        head = NULL;
         return total;
     }
     ~MyList()
     {
-        MyNode* ptr = head;
-        MyNode* temp = ptr;
-        while (ptr != NULL)
-        {
-           delete(ptr->GetValue());
-           itamar_check--;
-           ptr = ptr->GetNext();
-           delete(temp);
-           itamar_check--;
-           temp = ptr;
-        }
     }
 
     void InsertAtBeginning(Employee* newEmployee)
@@ -207,12 +197,12 @@ public:
                 int x = employees[i]->DeleteAllList();
                   totalAmountDeleted += x;
                   totalAmountDeleted222 += x;
+                  delete employees[i];
               }
+              employees[i] = NULL;
+
           }
           delete[] employees;
-          itamar_check--;
-          assert (totalAmount == totalAmountDeleted);
-          assert (totalAmountDeleted222 == totalAmount222);
       }
 
     int GetHashKey(int id) const

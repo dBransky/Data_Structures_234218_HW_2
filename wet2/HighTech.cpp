@@ -214,16 +214,10 @@ void HighTech::CompanyValue(int CompanyId) {
         throw InvalidInput();
     }
     double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
-        if (standing - (int)standing < 1e-7)
-        {
-            std::cout << "CompanyValue: " << standing  << ".0" << std::endl;
-        }
-        else
-        {
-            int value = (int)(standing * 10 + 1e-4);
-            std::cout << "CompanyValue: " << value / 10 << "." << (value % 10) << std::endl;
-        }
+    int value = (int)(standing * 10 + 1e-4);
+    std::cout << "CompanyValue: " << (int)(value / 10) << "." << (value % 10) << std::endl;
 }
+
 
 
 //Extra

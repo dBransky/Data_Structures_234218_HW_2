@@ -215,7 +215,7 @@ void HighTech::CompanyValue(int CompanyId) {
     }
     double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
     int int_standing = (int) standing;
-    int digit_standing =(int) ((standing - (double)(int_standing) + 1e-4) * 100);
+    int digit_standing =(int) ((standing - (double)(int_standing) + 1e-4) * 10);
     std::cout << "CompanyValue: " << int_standing << "." << digit_standing << std::endl;
 }
 

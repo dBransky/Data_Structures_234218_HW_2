@@ -5,7 +5,7 @@ UnionFind::UnionFind(int k)
     K = k;
     size = new int[k];
     parents = new int[k];
-    salaryIncrease = new double[k];
+    salaryIncrease = new long double[k];
     elements = new Company*[k];
     for (int i = 0; i < k; i++)
     {
@@ -31,9 +31,9 @@ UnionFind::~UnionFind()
     delete[] elements;
 }
 
-double UnionFind::GetCompanyValue(int CompanyId)
+long double UnionFind::GetCompanyValue(int CompanyId)
 {
-    double sum = elements[CompanyId - 1]->GetCompanyValue() + salaryIncrease[CompanyId - 1];
+    long double sum = elements[CompanyId - 1]->GetCompanyValue() + salaryIncrease[CompanyId - 1];
     int last = CompanyId;
     while (last != -1)
     {
@@ -50,7 +50,7 @@ int UnionFind::Find(int CompanyId)
 {
     int temp = CompanyId;
     int last = CompanyId;
-    double sumR = 0;
+    long double sumR = 0;
     while (last != -1)
     {
         temp = last;
@@ -62,6 +62,7 @@ int UnionFind::Find(int CompanyId)
     }
     int targetCompany = temp;
     last = CompanyId;
+    long double save = 0.0;
     while (last != -1 && targetCompany != CompanyId)
     {
         temp = last;
@@ -69,7 +70,7 @@ int UnionFind::Find(int CompanyId)
         if (last != -1 && last != targetCompany)
         {
             parents[temp - 1] = targetCompany;
-            double save = sumR - salaryIncrease[temp - 1];
+            save = sumR - salaryIncrease[temp - 1];
             salaryIncrease[temp - 1] = sumR;
             sumR = save;
 
@@ -87,7 +88,7 @@ void UnionFind::Union(int acquire, int target, double Factor)
 {
     int realAcquire = Find(acquire);
     int realTarget = Find(target);
-    double amountToAdd = GetCompanyValue(realTarget) * Factor;
+    long double amountToAdd = GetCompanyValue(realTarget) * Factor;
     parents[Find(realTarget) - 1] = realAcquire;
     salaryIncrease[realTarget - 1] = salaryIncrease[realTarget - 1] - amountToAdd - salaryIncrease[realAcquire - 1];
     salaryIncrease[realAcquire - 1] += amountToAdd;

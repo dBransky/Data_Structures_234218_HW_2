@@ -10,14 +10,14 @@ private:
     int K;
     int* size;
     int* parents;
-    double* salaryIncrease;
+    long double* salaryIncrease;
     Company** elements;
 
 public:
     UnionFind(int k);
     ~UnionFind();
     int Find(int CompanyId);
-    double GetCompanyValue(int CompanyId);
+    long double GetCompanyValue(int CompanyId);
     Company* GetCorrectCompanyPosByConst(int CompanyId);
     void Union(int acquire, int target, double Factor);
     int GetK();

@@ -137,7 +137,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
     if (m <= 0 || CompanyId < 0 || CompanyId > companies.GetK()) {
         throw InvalidInput();
     }
-    int totalSum;
+    long int totalSum;
     if (CompanyId > 0) {
         if (companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyAmountOfEmployees() < m) {
             throw Failure();
@@ -165,7 +165,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     {
         CompanyId = companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyId();
     }
-    double totalSum = 0.0;
+    long double totalSum = 0.0;
     double totalAmount = 0.0;
     if (lowerSalary == 0) {
         if (CompanyId == 0) {
@@ -191,21 +191,10 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-    double averageBumpGrade = totalSum / totalAmount;
-    if (averageBumpGrade - (int)averageBumpGrade < 1e-5)
-    {
-        std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << averageBumpGrade << ".0" << std::endl;
-    }
-    else
-    {
-        int check = (int)(averageBumpGrade * 10 + 1e-4);
-        if ((check) % 10 == 0)
-        {
-            std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << check / 10 << ".0" << std::endl;
-        }
-        else
-            std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << (((double)((int)((averageBumpGrade  + 1e-5)* 10))) / 10.0) << std::endl;
-    }
+    long double averageBumpGrade = totalSum / totalAmount;
+    long int int_standing = (int) averageBumpGrade;
+    long digit_standing =(long int) ((averageBumpGrade - (long double)(int_standing) + 1e-6) * 10);
+    std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << int_standing << "." << digit_standing << std::endl;
 }
 
 void HighTech::CompanyValue(int CompanyId) {
@@ -213,9 +202,9 @@ void HighTech::CompanyValue(int CompanyId) {
     {
         throw InvalidInput();
     }
-    double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
-    int int_standing = (int) standing;
-    int digit_standing =(int) ((standing - (double)(int_standing) + 1e-4) * 10);
+    long double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
+    long int int_standing = (int) standing;
+    long digit_standing =(long int) ((standing - (long double)(int_standing) + 1e-6) * 10);
     std::cout << "CompanyValue: " << int_standing << "." << digit_standing << std::endl;
 }
 

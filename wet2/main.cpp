@@ -11,6 +11,9 @@ int main() {
     u->PrintStatus();
 
     u->PrintStatus();
-
+    double x = 200000000.0;
+    std::cout << x << std::endl;
+    int value = (int)(x * 10 + 1e-4);
+    std::cout << "CompanyValue: " << value / 10 << "." << (value % 10) << std::endl;
     return 0;
 }

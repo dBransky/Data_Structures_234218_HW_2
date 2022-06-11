@@ -99,7 +99,7 @@ private:
     }
 
 
-    int SumGradesNodes(Node<T, Key> *node, int m) {
+    long int SumGradesNodes(Node<T, Key> *node, int m) {
         if (!node)
             return 0;
         if (m == 0)
@@ -108,9 +108,7 @@ private:
             return node->grade_right + node->pair.element->GetGrade() +
                    SumGradesNodes(node->left, m - node->rank_right - 1);
         }
-        if (node->rank_right >= m) {
-            return SumGradesNodes(node->right, m);
-        }
+        return SumGradesNodes(node->right, m);
     }
 
     bool IsLeftSon(Node<T, Key> *son, Node<T, Key> *father) {
@@ -397,7 +395,7 @@ private:
         }
     }
 
-    void SumMinMaxLog(Node<T, Key> *node, int *grade_sum, Key min_key, Key max_key, int split_dir) {
+    void SumMinMaxLog(Node<T, Key> *node, long int *grade_sum, Key min_key, Key max_key, int split_dir) {
         if (!node)
             return;
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
@@ -444,13 +442,13 @@ int amount;
 
     int GetRank(Key key);
 
-    int SumGrades(int m);
+    long int SumGrades(int m);
 
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
 
-    int SumMinMax(Key top, Key bottom);
+    long int SumMinMax(Key top, Key bottom);
 
     int AmountMinMax(Key top, Key bottom);
     bool check_is_valid();
@@ -698,7 +696,7 @@ int Map<T, Key>::GetRank(Key key) {
 
 
 template<class T, class Key>
-int Map<T, Key>::SumGrades(int m) {
+long int Map<T, Key>::SumGrades(int m) {
     assert(is_valid(head));
     return SumGradesNodes(head, m);
 }
@@ -713,9 +711,9 @@ int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
 }
 
 template<class T, class Key>
-int Map<T, Key>::SumMinMax(Key top, Key bottom) {
+long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     assert(is_valid(head));
-    int sum = 0;
+    long int sum = 0;
     if (top.salary == 28 && bottom.salary == 22)
         int z = 1;
     SumMinMaxLog(head, &sum, bottom, top, -1);

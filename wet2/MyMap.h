@@ -277,12 +277,12 @@ private:
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
         if (node->left)
-            left_valid = (node->grade_left == node->left->sum_grade);
+            left_valid = (node->grade_left == node->left->sum_grade+node->rank_left*node->bonus_left);
         else
             left_valid = (node->grade_left == 0);
         bool right_valid;
         if (node->right)
-            right_valid = (node->grade_right == node->right->sum_grade);
+            right_valid = (node->grade_right == node->right->sum_grade+node->rank_right*node->bonus_right);
         else
             right_valid = (node->grade_right == 0);
 
@@ -588,8 +588,10 @@ void Map<T, Key>::insert(Key key, T element) {
     Node<T, Key> *father = GetNodeFather(head, key);
     if (father != NULL) {
         if ((father->left != NULL && father->left->pair.key == key) ||
-            (father->right != NULL && father->right->pair.key == key))
+            (father->right != NULL && father->right->pair.key == key)) {
+            assert(is_valid(head));
             throw KeyAlreadyExists();
+        }
     }
     Pair<T, Key> pair(element, key);
     amount++;
@@ -802,7 +804,6 @@ int Map<T, Key>::GetRank(Key key) {
 
 template<class T, class Key>
 long int Map<T, Key>::SumGrades(int m) {
-    assert(is_valid(head));
     return SumGradesNodes(head, m);
 }
 
@@ -819,8 +820,6 @@ template<class T, class Key>
 long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     assert(is_valid(head));
     long int sum = 0;
-    if (top.salary == 28 && bottom.salary == 22)
-        int z = 1;
     SumMinMaxLog(head, &sum, bottom, top, -1);
     assert(is_valid(head));
     return sum;

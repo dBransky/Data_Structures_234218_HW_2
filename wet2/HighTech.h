@@ -17,7 +17,7 @@ class HighTech
 {
 private:
     int amountOfNewEmployees;
-    int totalOfGradeOfNewEmployees;
+    long long int totalOfGradeOfNewEmployees;
     int amountOfEmployeesWithSalaryBiggerThenZero;
     int bonus_new_employees;
     UnionFind companies;

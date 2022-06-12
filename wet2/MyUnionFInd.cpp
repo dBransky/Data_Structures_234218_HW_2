@@ -5,7 +5,7 @@ UnionFind::UnionFind(int k)
     K = k;
     size = new int[k];
     parents = new int[k];
-    salaryIncrease = new long double[k];
+    salaryIncrease = new double[k];
     elements = new Company*[k];
     for (int i = 0; i < k; i++)
     {
@@ -31,9 +31,13 @@ UnionFind::~UnionFind()
     delete[] elements;
 }
 
-long double UnionFind::GetCompanyValue(int CompanyId)
+double UnionFind::GetCompanyValue(int CompanyId)
 {
-    long double sum = elements[CompanyId - 1]->GetCompanyValue() + salaryIncrease[CompanyId - 1];
+    if (elements[CompanyId - 1]->GetCompanyValue() == 0)
+    {
+        int x = 5;
+    }
+    double sum = (elements[CompanyId - 1]->GetCompanyValue()) + salaryIncrease[CompanyId - 1];
     int last = CompanyId;
     while (last != -1)
     {
@@ -50,7 +54,7 @@ int UnionFind::Find(int CompanyId)
 {
     int temp = CompanyId;
     int last = CompanyId;
-    long double sumR = 0;
+    double sumR = 0;
     while (last != -1)
     {
         temp = last;
@@ -62,7 +66,7 @@ int UnionFind::Find(int CompanyId)
     }
     int targetCompany = temp;
     last = CompanyId;
-    long double save = 0.0;
+    double save = 0.0;
     while (last != -1 && targetCompany != CompanyId)
     {
         temp = last;
@@ -88,7 +92,7 @@ void UnionFind::Union(int acquire, int target, double Factor)
 {
     int realAcquire = Find(acquire);
     int realTarget = Find(target);
-    long double amountToAdd = GetCompanyValue(realTarget) * Factor;
+    long long amountToAdd = GetCompanyValue(realTarget) * Factor;
     parents[Find(realTarget) - 1] = realAcquire;
     salaryIncrease[realTarget - 1] = salaryIncrease[realTarget - 1] - amountToAdd - salaryIncrease[realAcquire - 1];
     salaryIncrease[realAcquire - 1] += amountToAdd;
@@ -98,41 +102,4 @@ void UnionFind::Union(int acquire, int target, double Factor)
 int UnionFind::GetK()
 {
     return K;
-}
-
-
-void UnionFind::Itamar(int companyId, double value)
-{
-    elements[companyId - 1]->SetTotalValue(value);
-}
-
-
-void UnionFind::PrintStatus()
-{
-    std::cout << " ---------------------------------- " << std::endl << "  ";
-    for (int i = 1; i <= K ; i++)
-    {
-        std::cout << i << "   ";
-    }
-    std::cout << std::endl << "[ ";
-    for (int i = 0; i < K - 1; i++)
-    {
-        if (parents[i] == -1)
-            std::cout << parents[i] << ", ";
-        else
-        {
-            std::cout << parents[i] << ",  ";
-        }
-    }
-    std::cout << parents[K - 1] << "]" << std::endl;
-
-    std::cout << std::endl << "[ ";
-    /*
-    for (int i = 0; i < K - 1; i++)
-    {
-        std::cout << GetCompanyValue(i + 1) << ",  ";
-    }
-    std::cout << GetCompanyValue( K) << "]" << std::endl;
-    std::cout << " ---------------------------------- " << std::endl << " ";
-     */
 }

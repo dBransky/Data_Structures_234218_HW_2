@@ -137,7 +137,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
     if (m <= 0 || CompanyId < 0 || CompanyId > companies.GetK()) {
         throw InvalidInput();
     }
-    long int totalSum;
+    long long int totalSum;
     if (CompanyId > 0) {
         if (companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyAmountOfEmployees() < m) {
             throw Failure();
@@ -164,7 +164,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     {
         CompanyId = companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyId();
     }
-    long double totalSum = 0.0;
+    double totalSum = 0.0;
     double totalAmount = 0.0;
     if (lowerSalary == 0) {
         if (CompanyId == 0) {
@@ -190,7 +190,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-    long double averageBumpGrade = totalSum / totalAmount;
+    double averageBumpGrade = totalSum / totalAmount;
     std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << averageBumpGrade << std::endl;
 }
 
@@ -199,8 +199,7 @@ void HighTech::CompanyValue(int CompanyId) {
     {
         throw InvalidInput();
     }
-    long double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
-    std::cout << "CompanyValue: " << standing << std::endl;
+    printf("CompanyValue: %.1f\n", companies.GetCompanyValue(CompanyId));
 }
 
 

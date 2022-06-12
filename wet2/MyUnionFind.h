@@ -14,7 +14,6 @@ private:
     Company** elements;
 
 public:
-    void MyAssert();
     UnionFind(int k);
     ~UnionFind();
     int Find(int CompanyId);

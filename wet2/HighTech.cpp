@@ -94,6 +94,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
         company->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));
     } else {
+        employee->IncreaseGrade(company->grade_bonus_new_employees);
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
@@ -208,7 +209,11 @@ void HighTech::CompanyValue(int CompanyId) {
 //Extra
 
 void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade) {
-
+    for (int i = 0; i < companies.GetK(); ++i) {
+        Company* company=companies.GetCompanyById(i+1);
+        if(company->GetCompanyEmployees()==NULL)
+            continue;
+    }
 }
 
 

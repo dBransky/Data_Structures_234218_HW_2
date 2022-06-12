@@ -379,8 +379,6 @@ static errorType OnCompanyValue(void* DS, const char* const command) {
 /***************************************************************************/
 /* OnBumpGradeToEmployees                                                        */
 /***************************************************************************/
-/*
- * 20 points Bonus function:
 static errorType OnBumpGradeToEmployees(void* DS, const char* const command) {
     int lowerSalary;
     int higherSalary;
@@ -398,7 +396,7 @@ static errorType OnBumpGradeToEmployees(void* DS, const char* const command) {
 
     return error_free;
 }
-*/
+
 
 /***************************************************************************/
 /* OnQuit                                                                  */

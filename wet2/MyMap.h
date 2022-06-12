@@ -395,6 +395,108 @@ private:
         }
     }
 
+    void DistributeTwoLayers(Node<T, Key> *node) {
+        if (node->left != NULL) {
+            node->left->pair.element->IncreaseGrade(node->bonus_left);
+            node->left->bonus_left += node->bonus_left;
+            node->left->bonus_right += node->bonus_left;
+            if (node->left->left != NULL) {
+                node->left->left->pair.element->IncreaseGrade(node->left->bonus_left);
+                node->left->left->bonus_left += node->left->bonus_left;
+                node->left->left->bonus_right += node->left->bonus_left;
+            }
+            if (node->left->right != NULL) {
+                node->left->right->pair.element->IncreaseGrade(node->left->bonus_right);
+                node->left->right->bonus_left += node->left->bonus_right;
+                node->left->right->bonus_right += node->left->bonus_right;
+            }
+        }
+        if (node->right != NULL) {
+            node->right->pair.element->IncreaseGrade(node->bonus_right);
+            node->right->bonus_left += node->bonus_right;
+            node->right->bonus_right += node->bonus_right;
+            if (node->right->left != NULL) {
+                node->right->left->pair.element->IncreaseGrade(node->right->bonus_left);
+                node->right->left->bonus_left += node->right->bonus_left;
+                node->right->left->bonus_right += node->right->bonus_left;
+            }
+            if (node->right->right != NULL) {
+                node->right->right->pair.element->IncreaseGrade(node->right->bonus_right);
+                node->right->right->bonus_left += node->right->bonus_right;
+                node->right->right->bonus_right += node->right->bonus_right;
+            }
+        }
+        node->bonus_right = 0;
+        node->bonus_left = 0;
+    }
+
+    void DistributeSingleLayer(Node<T, Key> *node) {
+        if (node->left != NULL) {
+            node->left->pair.element->IncreaseGrade(node->bonus_left);
+            node->left->bonus_left += node->bonus_left;
+            node->left->bonus_right += node->bonus_left;
+
+        }
+        if (node->right != NULL) {
+            node->right->pair.element->IncreaseGrade(node->bonus_right);
+            node->right->bonus_left += node->bonus_right;
+            node->right->bonus_right += node->bonus_right;
+        }
+        node->bonus_right = 0;
+        node->bonus_left = 0;
+
+    }
+
+    void DistributeGrades(Node<T, Key> *node, Key key) {
+        if (!node)
+            return;
+        if (CompareKeys(node, key)) {
+            DistributeTwoLayers(node);
+        } else {
+            DistributeSingleLayer(node);
+            if (node->pair.key > key)
+                DistributeGrades(node->left,key);
+            if (node->pair.key < key)
+                DistributeGrades(node->right,key);
+        }
+
+    }
+
+    void DistributeMapGrades(Node<T, Key> *node) {
+        if (!node)
+            return;
+        DistributeSingleLayer(node);
+        DistributeMapGrades(node->left);
+        DistributeMapGrades(node->right);
+    }
+
+    void IncreaseGradesInRange(Node<T, Key> *node, Key min_key, Key max_key, int split_dir, int inc_grade) {
+        if (!node)
+            return;
+        if (node->pair.key <= max_key && node->pair.key >= min_key) {
+            node->pair.element->IncreaseGrade(inc_grade);
+            if (split_dir == -1) {
+                IncreaseGradesInRange(node->left, min_key, max_key, 0, inc_grade);
+                IncreaseGradesInRange(node->right, min_key, max_key, 1, inc_grade);
+            }
+            if (split_dir == 0) {
+                node->bonus_right += inc_grade;
+                IncreaseGradesInRange(node->left, min_key, max_key, 0, inc_grade);
+            }
+            if (split_dir == 1) {
+                node->bonus_left += inc_grade;
+                IncreaseGradesInRange(node->right, min_key, max_key, 1, inc_grade);
+            }
+        } else {
+            if (node->pair.key <= max_key) {
+                IncreaseGradesInRange(node->right, min_key, max_key, split_dir, inc_grade);
+            }
+            if (node->pair.key >= min_key) {
+                IncreaseGradesInRange(node->left, min_key, max_key, split_dir, inc_grade);
+            }
+        }
+    }
+
     void SumMinMaxLog(Node<T, Key> *node, long int *grade_sum, Key min_key, Key max_key, int split_dir) {
         if (!node)
             return;
@@ -451,6 +553,9 @@ int amount;
     long int SumMinMax(Key top, Key bottom);
 
     int AmountMinMax(Key top, Key bottom);
+
+    void IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase);
+
     bool check_is_valid();
         bool check_is_valid2(int companyId);
 
@@ -475,10 +580,10 @@ Map<T, Key>::Map() {
 
 template<class T, class Key>
 void Map<T, Key>::insert(Key key, T element) {
-    if (!is_valid(head))
-        int z = 1;
-    if (does_exist(key))
+    if (does_exist(key)) {
+        assert(is_valid(head));
         throw KeyAlreadyExists();
+    }
     Node<T, Key> *father = GetNodeFather(head, key);
     if (father != NULL) {
         if ((father->left != NULL && father->left->pair.key == key) ||
@@ -492,6 +597,7 @@ void Map<T, Key>::insert(Key key, T element) {
         assert(is_valid(head));
         return;
     }
+    DistributeGrades(head,father->pair.key);
     if (father->pair.key > key) {
         if (father->left == NULL) {
             father->left = new Node<T, Key>(NULL, NULL, father, pair);
@@ -511,18 +617,15 @@ void Map<T, Key>::insert(Key key, T element) {
             father->right->pair.element = element;
         }
         BalanceRoute(father->right);
-        if(!is_valid(head))
-            int z=1;
     }
     assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
-    if(!is_valid(head))
-        int z=1;
     Node<T, Key> *node = GetNode(head, key);
-    if (node == NULL)
+    DistributeGrades(head,key);
+    if (node == NULL) {
         throw KeyDoesntExist();
     Node<T, Key> *temp = NULL;
     amount--;
@@ -647,12 +750,13 @@ Pair<T, Key> *Map<T, Key>::GetObjectsFromKey(Key min_key, Key max_key, int *size
 
 template<class T, class Key>
 Map<T, Key>::~Map() {
-
     FreePostOrder(head);
 }
 
 template<class T, class Key>
 void Map<T, Key>::merge(Map &map) {
+    DistributeMapGrades(head);
+    DistributeMapGrades(map.head);
     Pair<T, Key> *array1 = map.ArrayFromTree();
     Pair<T, Key> *array2 = this->ArrayFromTree();
     Pair<T, Key> *merged = MergeSortedArrays(array1, array2, map.amount, this->amount);
@@ -680,8 +784,7 @@ void Map<T, Key>::merge(Map &map) {
 template<class T, class Key>
 bool Map<T, Key>::does_exist(Key key) {
     Node<T, Key> *result = GetNode(head, key);
-    if (!is_valid(head))
-        int z = 1;
+    assert(is_valid(head));
     return result;
 }
 
@@ -729,6 +832,11 @@ bool Map<T, Key>::check_is_valid() {
 template<class T, class Key>
 bool Map<T, Key>::check_is_valid2(int companyId) {
     return is_valid2(head, companyId);
+}
+
+template<class T, class Key>
+void Map<T, Key>::IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase) {
+
 }
 
 #endif //DATA_STRUCTURES_234218_Map_H

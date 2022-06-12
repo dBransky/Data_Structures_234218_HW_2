@@ -1,11 +1,11 @@
 #include "HighTech.h"
 
 HighTech::HighTech(int k) : amountOfNewEmployees(0), totalOfGradeOfNewEmployees(0),
-                            amountOfEmployeesWithSalaryBiggerThenZero(0), companies(k), allEmployees(), newEmployees() {
+                            amountOfEmployeesWithSalaryBiggerThenZero(0), companies(k), allEmployees(), newEmployees(),
+                            bonus_new_employees(0) {
 }
 
-HighTech::~HighTech()
-{
+HighTech::~HighTech() {
 
 }
 
@@ -17,7 +17,7 @@ void HighTech::AddEmployee(int EmployeeId, int CompanyId, int Grade) {
         throw Failure();
     }
     int correctCompanyId = companies.Find(CompanyId); // O(log* k)
-    Employee* employee = new Employee(EmployeeId, Grade, 0, correctCompanyId);
+    Employee *employee = new Employee(EmployeeId, Grade - this->bonus_new_employees, 0, correctCompanyId);
     newEmployees.Insert(employee);
     Company *company = companies.GetCorrectCompanyPosByConst(correctCompanyId);
     company->IncreaseAmountOfNewEmployees(1);
@@ -40,7 +40,8 @@ void HighTech::RemoveEmployee(int EmployeeId) {
         int correctCompany = companies.Find(employee->GetCompanyId());
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
         company->IncreaseAmountOfEmployees(-1);
-        companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));
+        companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyEmployees()->remove(
+                SalaryId(employee->GetSalary(), EmployeeId));
         amountOfEmployeesWithSalaryBiggerThenZero--;
     } else {
         Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
@@ -69,15 +70,16 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
     TargetCompany->IncreaseAmountOfEmployees(-amountOfEmployees);
     AcquireCompany->IncreaseAmountOfNewEmployees(amountOfNewEmployees);
     AcquireCompany->IncreaseTotalGradesOfNewEmployees(totalGrades);
-    Pair<Employee *, SalaryId> *pair_list = AcquireCompany->GetCompanyEmployees()->GetFirstNum(AcquireCompany->GetCompanyAmountOfEmployees());
+    Pair<Employee *, SalaryId> *pair_list = AcquireCompany->GetCompanyEmployees()->GetFirstNum(
+            AcquireCompany->GetCompanyAmountOfEmployees());
     int totalAmount = AcquireCompany->GetCompanyAmountOfEmployees();
-    for (int i = 0; i < totalAmount; i++)
-    {
+    for (int i = 0; i < totalAmount; i++) {
         pair_list[i].element->SetCompany(AcquireCompany->GetCompanyId());
         pair_list[i].element = NULL;
     }
     delete[] (pair_list);
-    companies.Union(companies.Find(AcquireCompany->GetCompanyId()), companies.Find(TargetCompany->GetCompanyId()), Factor);
+    companies.Union(companies.Find(AcquireCompany->GetCompanyId()), companies.Find(TargetCompany->GetCompanyId()),
+                    Factor);
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
@@ -89,12 +91,12 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
     }
     Employee *employee = newEmployees.FindById(EmployeeId);
     employee->SetCompany(companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyId());
-    Company* company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
+    Company *company = companies.GetCorrectCompanyPosByConst(employee->GetCompanyId());
     if (employee->GetSalary() != 0) {
         allEmployees.remove(SalaryId(employee->GetSalary(), EmployeeId));
         company->GetCompanyEmployees()->remove(SalaryId(employee->GetSalary(), EmployeeId));
     } else {
-        employee->IncreaseGrade(company->grade_bonus_new_employees);
+        employee->IncreaseGrade(this->bonus_new_employees);
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
@@ -104,7 +106,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
     }
     employee->IncreaseSalary(SalaryIncrease);
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
-    company->GetCompanyEmployees()->insert(SalaryId(employee->GetSalary() , EmployeeId),employee);
+    company->GetCompanyEmployees()->insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
 }
 
 void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {
@@ -117,19 +119,21 @@ void HighTech::PromoteEmployee(int EmployeeId, int BumpGrade) {
     if (BumpGrade > 0) {
         Employee *employee = newEmployees.FindById(EmployeeId);
         employee->SetCompany(companies.GetCorrectCompanyPosByConst(employee->GetCompanyId())->GetCompanyId());
-        if (newEmployees.FindById(EmployeeId)->GetSalary() == 0)
-        {
+        if (newEmployees.FindById(EmployeeId)->GetSalary() == 0) {
             newEmployees.FindById(EmployeeId)->IncreaseGrade(BumpGrade);
-            companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->IncreaseTotalGradesOfNewEmployees(BumpGrade);
+            companies.GetCorrectCompanyPosByConst(
+                    newEmployees.FindById(EmployeeId)->GetCompanyId())->IncreaseTotalGradesOfNewEmployees(BumpGrade);
             totalOfGradeOfNewEmployees += BumpGrade;
-        }
-        else
-        {
+        } else {
             allEmployees.remove(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
-            companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees()->remove(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
+            companies.GetCorrectCompanyPosByConst(
+                    newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees()->remove(
+                    SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId));
             newEmployees.FindById(EmployeeId)->IncreaseGrade(BumpGrade);
-            allEmployees.insert(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId),employee);
-            companies.GetCorrectCompanyPosByConst(newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees()->insert(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId),employee);
+            allEmployees.insert(SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId), employee);
+            companies.GetCorrectCompanyPosByConst(
+                    newEmployees.FindById(EmployeeId)->GetCompanyId())->GetCompanyEmployees()->insert(
+                    SalaryId(newEmployees.FindById(EmployeeId)->GetSalary(), EmployeeId), employee);
         }
     }
 }
@@ -155,14 +159,12 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
     std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << totalSum << std::endl;
 }
 
-void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary)
-{
+void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary) {
     if (higherSalary < 0 || lowerSalary < 0 || higherSalary < lowerSalary ||
         CompanyId > companies.GetK() || CompanyId < 0) {
         throw InvalidInput();
     }
-    if (CompanyId != 0)
-    {
+    if (CompanyId != 0) {
         CompanyId = companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyId();
     }
     double totalSum = 0.0;
@@ -179,8 +181,9 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     if (CompanyId > 0) {
         totalAmount += companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->AmountMinMax(
                 SalaryId(higherSalary, INT32_MAX), SalaryId(lowerSalary, 0));
-        totalSum += companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->SumMinMax(SalaryId(higherSalary, INT32_MAX),
-                                                                                     SalaryId(lowerSalary, 0));
+        totalSum += companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->SumMinMax(
+                SalaryId(higherSalary, INT32_MAX),
+                SalaryId(lowerSalary, 0));
         if (totalAmount == 0) {
             throw Failure();
         }
@@ -191,13 +194,12 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-    double averageBumpGrade = totalSum / totalAmount ;
+    double averageBumpGrade = totalSum / totalAmount;
     printf("AverageBumpGradeBetweenSalaryByGroup: %.1f\n", averageBumpGrade);
 }
 
 void HighTech::CompanyValue(int CompanyId) {
-    if (CompanyId > companies.GetK() || CompanyId <= 0)
-    {
+    if (CompanyId > companies.GetK() || CompanyId <= 0) {
         throw InvalidInput();
     }
     double result = companies.GetCompanyValue(CompanyId);
@@ -210,10 +212,13 @@ void HighTech::CompanyValue(int CompanyId) {
 
 void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade) {
     for (int i = 0; i < companies.GetK(); ++i) {
-        Company* company=companies.GetCompanyById(i+1);
-        if(company->GetCompanyEmployees()==NULL)
+        Company *company = companies.GetCorrectCompanyPosByConst(i + 1);
+        if (company->GetCompanyEmployees() == NULL)
             continue;
+        company->GetCompanyEmployees()->IncreaseGradesInRange(SalaryId(lowerSalary, 0),
+                                                              SalaryId(lowerSalary, INT32_MAX), BumpGrade);
     }
+
 }
 
 

@@ -271,51 +271,50 @@ private:
     bool is_valid(Node<T, Key> *node) {
         if (node == NULL)
             return true;
-         if (node->pair.element == NULL)
-         {
-              return false;
-         }
+        if (node->pair.element == NULL) {
+            return false;
+        }
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
-        if(node->left)
-            left_valid=(node->grade_left==node->left->sum_grade);
+        if (node->left)
+            left_valid = (node->grade_left == node->left->sum_grade);
         else
-            left_valid=(node->grade_left==0);
+            left_valid = (node->grade_left == 0);
         bool right_valid;
-        if(node->right)
-            right_valid=(node->grade_right==node->right->sum_grade);
+        if (node->right)
+            right_valid = (node->grade_right == node->right->sum_grade);
         else
-            right_valid=(node->grade_right==0);
+            right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
+                           left_valid && right_valid;
         return loop_free && valid_grade;
 
     }
 
- bool is_valid2(Node<T, Key> *node, int companyId) {
+    bool is_valid2(Node<T, Key> *node, int companyId) {
         if (node == NULL)
             return true;
-         if (node->pair.element == NULL)
-         {
-              return false;
-         }
-         if (node->pair.element->GetCompanyId() != companyId)
-         {
+        if (node->pair.element == NULL) {
             return false;
-         }
+        }
+        if (node->pair.element->GetCompanyId() != companyId) {
+            return false;
+        }
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
-        if(node->left)
-            left_valid=(node->grade_left==node->left->sum_grade);
+        if (node->left)
+            left_valid = (node->grade_left == node->left->sum_grade);
         else
-            left_valid=(node->grade_left==0);
+            left_valid = (node->grade_left == 0);
         bool right_valid;
-        if(node->right)
-            right_valid=(node->grade_right==node->right->sum_grade);
+        if (node->right)
+            right_valid = (node->grade_right == node->right->sum_grade);
         else
-            right_valid=(node->grade_right==0);
+            right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
+                           left_valid && right_valid;
         return loop_free && valid_grade;
 
     }
@@ -455,9 +454,9 @@ private:
         } else {
             DistributeSingleLayer(node);
             if (node->pair.key > key)
-                DistributeGrades(node->left,key);
+                DistributeGrades(node->left, key);
             if (node->pair.key < key)
-                DistributeGrades(node->right,key);
+                DistributeGrades(node->right, key);
         }
 
     }
@@ -525,7 +524,8 @@ private:
     }
 
 public:
-int amount;
+    int amount;
+
     Map();
 
     ~Map();
@@ -557,7 +557,8 @@ int amount;
     void IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase);
 
     bool check_is_valid();
-        bool check_is_valid2(int companyId);
+
+    bool check_is_valid2(int companyId);
 
 };
 
@@ -597,7 +598,7 @@ void Map<T, Key>::insert(Key key, T element) {
         assert(is_valid(head));
         return;
     }
-    DistributeGrades(head,father->pair.key);
+    DistributeGrades(head, father->pair.key);
     if (father->pair.key > key) {
         if (father->left == NULL) {
             father->left = new Node<T, Key>(NULL, NULL, father, pair);
@@ -624,90 +625,91 @@ void Map<T, Key>::insert(Key key, T element) {
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
     Node<T, Key> *node = GetNode(head, key);
-    DistributeGrades(head,key);
+    DistributeGrades(head, key);
     if (node == NULL) {
         throw KeyDoesntExist();
-    Node<T, Key> *temp = NULL;
-    amount--;
-    if (amount == 0) {
-        delete head;
-        head = NULL;
-        assert(is_valid(head));
-        return;
-    }
-    if (node->right != NULL && node->left != NULL) {
-        Node<T, Key> *leftest = GetLeftestNode(node->right);
-        if (leftest == node->right) {
-            leftest->left = node->left;
-            temp = leftest;
-            temp->father = node->father;
-            if (leftest->left != NULL)
-                leftest->left->father = leftest;
-        } else {
-            temp = leftest->father;
-            temp->left = leftest->right;
-            if (leftest->right != NULL)
-                leftest->right->father = temp;
-            leftest->father = NULL;
-            leftest->left = node->left;
-            if (leftest->left != NULL)
-                leftest->left->father = leftest;
-            leftest->right = node->right;
-            if (leftest->right != NULL)
-                leftest->right->father = leftest;
+        Node<T, Key> *temp = NULL;
+        amount--;
+        if (amount == 0) {
+            delete head;
+            head = NULL;
+            assert(is_valid(head));
+            return;
         }
-        if (node->father == NULL) {
-            head = leftest;
+        if (node->right != NULL && node->left != NULL) {
+            Node<T, Key> *leftest = GetLeftestNode(node->right);
+            if (leftest == node->right) {
+                leftest->left = node->left;
+                temp = leftest;
+                temp->father = node->father;
+                if (leftest->left != NULL)
+                    leftest->left->father = leftest;
+            } else {
+                temp = leftest->father;
+                temp->left = leftest->right;
+                if (leftest->right != NULL)
+                    leftest->right->father = temp;
+                leftest->father = NULL;
+                leftest->left = node->left;
+                if (leftest->left != NULL)
+                    leftest->left->father = leftest;
+                leftest->right = node->right;
+                if (leftest->right != NULL)
+                    leftest->right->father = leftest;
+            }
+            if (node->father == NULL) {
+                head = leftest;
+            } else {
+                if (IsLeftSon(node, node->father))
+                    node->father->left = leftest;
+                else
+                    node->father->right = leftest;
+                leftest->father = node->father;
+            }
+            temp->UpdateParams();
+            leftest->UpdateParams();
+            node->pair.element = NULL;
+            delete (node);
+            BalanceRoute(temp);
+            assert(is_valid(head));
+            return;
+        }
+        if (node->right == NULL && node->left == NULL) {
+            temp = node->father;
+            if (node->father == NULL) {
+                head = temp;
+            } else {
+                if (IsLeftSon(node, node->father))
+                    node->father->left = NULL;
+                else
+                    node->father->right = NULL;
+            }
         } else {
-            if (IsLeftSon(node, node->father))
-                node->father->left = leftest;
-            else
-                node->father->right = leftest;
-            leftest->father = node->father;
+            if (node->right == NULL)
+                temp = node->left;
+            if (node->left == NULL)
+                temp = node->right;
+            if (node->father == NULL) {
+                head = temp;
+                temp->father = NULL;
+            } else {
+                if (IsLeftSon(node, node->father)) {
+                    {
+                        node->father->left = temp;
+                        temp->father = node->father;
+                    }
+                } else {
+                    node->father->right = temp;
+                    temp->father = node->father;
+                }
+            }
         }
         temp->UpdateParams();
-        leftest->UpdateParams();
         node->pair.element = NULL;
         delete (node);
         BalanceRoute(temp);
         assert(is_valid(head));
-        return;
     }
-    if (node->right == NULL && node->left == NULL) {
-        temp = node->father;
-        if (node->father == NULL) {
-            head = temp;
-        } else {
-            if (IsLeftSon(node, node->father))
-                node->father->left = NULL;
-            else
-                node->father->right = NULL;
-        }
-    } else {
-        if (node->right == NULL)
-            temp = node->left;
-        if (node->left == NULL)
-            temp = node->right;
-        if (node->father == NULL) {
-            head = temp;
-            temp->father = NULL;
-        } else {
-            if (IsLeftSon(node, node->father)) {
-                {
-                    node->father->left = temp;
-                    temp->father = node->father;
-                }
-            } else {
-                node->father->right = temp;
-                temp->father = node->father;
-            }
-        }
-    }
-    temp->UpdateParams();
-    node->pair.element = NULL;
-    delete (node);
-    BalanceRoute(temp);
-    assert(is_valid(head));
 }
 
 template<class T, class Key>
@@ -836,6 +838,7 @@ bool Map<T, Key>::check_is_valid2(int companyId) {
 
 template<class T, class Key>
 void Map<T, Key>::IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase) {
+    IncreaseGradesInRange(head,top,bottom,-1,grade_to_increase);
 
 }
 

@@ -151,8 +151,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
             totalSum = allEmployees.SumGrades(m);
         }
     }
-    double sumBumpGrade = totalSum;
-    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int) sumBumpGrade) << std::endl;
+    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int) totalSum) << std::endl;
 }
 
 void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary)
@@ -192,9 +191,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
         }
     }
     long double averageBumpGrade = totalSum / totalAmount;
-    long int int_standing = (int) averageBumpGrade;
-    long digit_standing =(long int) ((averageBumpGrade - (long double)(int_standing) + 1e-6) * 10);
-    std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << int_standing << "." << digit_standing << std::endl;
+    std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << averageBumpGrade << std::endl;
 }
 
 void HighTech::CompanyValue(int CompanyId) {
@@ -203,9 +200,7 @@ void HighTech::CompanyValue(int CompanyId) {
         throw InvalidInput();
     }
     long double standing = companies.GetCompanyValue(CompanyId); // O(log* k)
-    long int int_standing = (int) standing;
-    long digit_standing =(long int) ((standing - (long double)(int_standing) + 1e-6) * 10);
-    std::cout << "CompanyValue: " << int_standing << "." << digit_standing << std::endl;
+    std::cout << "CompanyValue: " << standing << std::endl;
 }
 
 

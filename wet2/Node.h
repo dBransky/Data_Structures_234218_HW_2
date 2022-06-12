@@ -21,9 +21,9 @@ public:
     int rank_left;
     int rank_right;
     int rank;
-    int sum_grade;
-    int grade_left;
-    int grade_right;
+    long sum_grade;
+    long grade_left;
+    long grade_right;
 
     Node(Node<T, Key> *left, Node<T, Key> *right, Node<T, Key> *father,
          Pair<T, Key> pair);

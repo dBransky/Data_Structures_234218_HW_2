@@ -4,7 +4,6 @@
 #include "EmployeeManager.h"
 #include <iostream>
 
-static int itamar_check = 0;
 
 class MyNode
 {
@@ -37,10 +36,8 @@ public:
         while (ptr != NULL)
         {
            delete ptr->GetValue();
-            itamar_check--;
            ptr = ptr->GetNext();
            delete temp;
-           itamar_check--;
            temp = ptr;
            total++;
         }
@@ -54,7 +51,6 @@ public:
     void InsertAtBeginning(Employee* newEmployee)
     {
         head = new MyNode(newEmployee, head);
-        itamar_check += 2;
     }
     void DeleteFromList(int id)
     {
@@ -63,10 +59,8 @@ public:
             MyNode* temp = head;
             head = head->GetNext();
             delete(temp->GetValue());
-            itamar_check--;
             temp->SetNext(NULL);
             delete(temp);
-            itamar_check--;
         }
         else
         {
@@ -80,10 +74,8 @@ public:
                     temp = ptr->GetNext();
                     ptr->SetNext(ptr->GetNext()->GetNext());
                     delete(temp->GetValue());
-                    itamar_check--;
                     temp->SetNext(NULL);
                     delete(temp);
-                    itamar_check--;
                     found = true;
                 }
                 else
@@ -171,11 +163,9 @@ public:
     HashTable()
     {
         employees = new MyList*[starting_length];
-        itamar_check++;
         for (int i = 0; i < starting_length; i++)
         {
             employees[i] = new MyList();
-            itamar_check++;
         }
         arraySize = starting_length;
         currentAmount = 0;

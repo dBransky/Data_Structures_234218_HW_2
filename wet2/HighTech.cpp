@@ -151,7 +151,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
             totalSum = allEmployees.SumGrades(m);
         }
     }
-    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << ((int) totalSum) << std::endl;
+    std::cout << "SumOfBumpGradeBetweenTopWorkersByGroup: " << totalSum << std::endl;
 }
 
 void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary)
@@ -190,8 +190,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-    double averageBumpGrade = totalSum / totalAmount;
-    std::cout << "AverageBumpGradeBetweenSalaryByGroup: " << averageBumpGrade << std::endl;
+    double averageBumpGrade = totalSum / totalAmount ;
+    printf("AverageBumpGradeBetweenSalaryByGroup: %.1f\n", averageBumpGrade);
 }
 
 void HighTech::CompanyValue(int CompanyId) {
@@ -199,7 +199,8 @@ void HighTech::CompanyValue(int CompanyId) {
     {
         throw InvalidInput();
     }
-    printf("CompanyValue: %.1f\n", companies.GetCompanyValue(CompanyId));
+    double result = companies.GetCompanyValue(CompanyId) + 0.01 ;
+    printf("CompanyValue: %.1f\n", result);
 }
 
 

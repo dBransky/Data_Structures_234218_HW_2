@@ -1,5 +1,10 @@
 #include "MyUnionFind.h"
 
+void UnionFind::MyAssert()
+{
+    assert(salaryIncrease[17] != -18);
+}
+
 UnionFind::UnionFind(int k)
 {
     K = k;
@@ -33,11 +38,12 @@ UnionFind::~UnionFind()
 
 double UnionFind::GetCompanyValue(int CompanyId)
 {
-    if (elements[CompanyId - 1]->GetCompanyValue() == 0)
-    {
-        int x = 5;
-    }
+
     double sum = (elements[CompanyId - 1]->GetCompanyValue()) + salaryIncrease[CompanyId - 1];
+    if (CompanyId == 18)
+    {
+        PrintStatus();
+    }
     int last = CompanyId;
     while (last != -1)
     {
@@ -80,7 +86,9 @@ int UnionFind::Find(int CompanyId)
 
         }
     }
+    MyAssert();
     return targetCompany;
+
 }
 
 Company* UnionFind::GetCorrectCompanyPosByConst(int CompanyId)
@@ -92,7 +100,10 @@ void UnionFind::Union(int acquire, int target, double Factor)
 {
     int realAcquire = Find(acquire);
     int realTarget = Find(target);
-    long long amountToAdd = GetCompanyValue(realTarget) * Factor;
+    if (realAcquire == 12 && realTarget == 18){
+        int x = 5;
+    }
+    double amountToAdd = GetCompanyValue(realTarget) * Factor;
     parents[Find(realTarget) - 1] = realAcquire;
     salaryIncrease[realTarget - 1] = salaryIncrease[realTarget - 1] - amountToAdd - salaryIncrease[realAcquire - 1];
     salaryIncrease[realAcquire - 1] += amountToAdd;
@@ -102,4 +113,31 @@ void UnionFind::Union(int acquire, int target, double Factor)
 int UnionFind::GetK()
 {
     return K;
+}
+void UnionFind::PrintStatus()
+{
+    std::cout << " ---------------------------------- " << std::endl << "  ";
+    for (int i = 1; i <= K ; i++)
+    {
+        std::cout << i << "   ";
+    }
+    std::cout << std::endl << "[ ";
+    for (int i = 0; i < K - 1; i++)
+    {
+        if (parents[i] == -1)
+            std::cout << parents[i] << ", ";
+        else
+        {
+            std::cout << parents[i] << ",  ";
+        }
+    }
+    std::cout << parents[K - 1] << "]" << std::endl;
+
+    std::cout << std::endl << "[ ";
+    for (int i = 0; i < K - 1; i++)
+    {
+        std::cout << salaryIncrease[i] << ",  ";
+    }
+    std::cout << salaryIncrease[K-1] << "]" << std::endl;
+    std::cout << " ---------------------------------- " << std::endl << " ";
 }

@@ -50,10 +50,7 @@ public:
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
-        if (!pair.element)
-            sum_grade = grade_left + grade_right;
-        else
-            sum_grade = grade_right + grade_left + pair.element->GetGrade();
+        sum_grade = grade_right + grade_left + pair.element->GetGrade();
     }
 };
 
@@ -64,6 +61,9 @@ Node<T, Key>::Node(Node<T, Key> *left, Node<T, Key> *right,
     h_left = 0;
     h_right = 0;
     balance_factor = 0;
+    grade_right=0;
+    grade_left=0;
+    sum_grade=0;
     rank = 1;
     this->UpdateParams();
 }

@@ -99,12 +99,14 @@ private:
     }
 
 
-    long int SumGradesNodes(Node<T, Key> *node, int m) {
+    long long int SumGradesNodes(Node<T, Key> *node, int m) {
+        if (m == 11)
+            int z = 1;
         if (!node)
             return 0;
         if (m == 0)
             return 0;
-        if (node->rank_right < m) {
+        if (node->rank_right + 1 <= m) {
             return node->grade_right + node->pair.element->GetGrade() +
                    SumGradesNodes(node->left, m - node->rank_right - 1);
         }
@@ -271,51 +273,55 @@ private:
     bool is_valid(Node<T, Key> *node) {
         if (node == NULL)
             return true;
-         if (node->pair.element == NULL)
-         {
-              return false;
-         }
+        if (node->pair.element == NULL) {
+            return false;
+        }
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
-        if(node->left)
-            left_valid=(node->grade_left==node->left->sum_grade);
+        if (node->left)
+            left_valid = (node->grade_left == node->left->sum_grade) && (node->grade_left == node->left->grade_left +
+                                                                                             node->left->grade_right +
+                                                                                             node->left->pair.element->GetGrade())&&(node->left->rank=node->rank_left);
         else
-            left_valid=(node->grade_left==0);
+            left_valid = (node->grade_left == 0);
         bool right_valid;
-        if(node->right)
-            right_valid=(node->grade_right==node->right->sum_grade);
+        if (node->right)
+            right_valid = (node->grade_right == node->right->sum_grade) && (node->grade_right ==
+                                                                            node->right->grade_left +
+                                                                            node->right->grade_right +
+                                                                            node->right->pair.element->GetGrade())&&((node->right->rank=node->rank_right));
         else
-            right_valid=(node->grade_right==0);
+            right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
+                           left_valid && right_valid;
         return loop_free && valid_grade;
 
     }
 
- bool is_valid2(Node<T, Key> *node, int companyId) {
+    bool is_valid2(Node<T, Key> *node, int companyId) {
         if (node == NULL)
             return true;
-         if (node->pair.element == NULL)
-         {
-              return false;
-         }
-         if (node->pair.element->GetCompanyId() != companyId)
-         {
+        if (node->pair.element == NULL) {
             return false;
-         }
+        }
+        if (node->pair.element->GetCompanyId() != companyId) {
+            return false;
+        }
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
-        if(node->left)
-            left_valid=(node->grade_left==node->left->sum_grade);
+        if (node->left)
+            left_valid = (node->grade_left == node->left->sum_grade);
         else
-            left_valid=(node->grade_left==0);
+            left_valid = (node->grade_left == 0);
         bool right_valid;
-        if(node->right)
-            right_valid=(node->grade_right==node->right->sum_grade);
+        if (node->right)
+            right_valid = (node->grade_right == node->right->sum_grade);
         else
-            right_valid=(node->grade_right==0);
+            right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade())&&left_valid&&right_valid;
+        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
+                           left_valid && right_valid;
         return loop_free && valid_grade;
 
     }
@@ -395,7 +401,7 @@ private:
         }
     }
 
-    void SumMinMaxLog(Node<T, Key> *node, long int *grade_sum, Key min_key, Key max_key, int split_dir) {
+    void SumMinMaxLog(Node<T, Key> *node, long long int *grade_sum, Key min_key, Key max_key, int split_dir) {
         if (!node)
             return;
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
@@ -423,7 +429,8 @@ private:
     }
 
 public:
-int amount;
+    int amount;
+
     Map();
 
     ~Map();
@@ -442,17 +449,19 @@ int amount;
 
     int GetRank(Key key);
 
-    long int SumGrades(int m);
+    long long int SumGrades(int m);
 
     Pair<T, Key> *GetFirstNum(int NumToReturn);
 
     Pair<T, Key> *GetObjectsFromKey(Key min_key, Key max_key, int *size);
 
-    long int SumMinMax(Key top, Key bottom);
+    long long int SumMinMax(Key top, Key bottom);
 
     int AmountMinMax(Key top, Key bottom);
+
     bool check_is_valid();
-        bool check_is_valid2(int companyId);
+
+    bool check_is_valid2(int companyId);
 
 };
 
@@ -500,7 +509,10 @@ void Map<T, Key>::insert(Key key, T element) {
             father->left->pair.element = element;
         }
         BalanceRoute(father->left);
-        assert(is_valid(head));
+        if (!is_valid(head)) {
+            int z = 1;
+            is_valid(head);
+        }
     } else {
         assert(is_valid(head));
         if (father->right == NULL) {
@@ -509,18 +521,19 @@ void Map<T, Key>::insert(Key key, T element) {
         } else {
             assert(is_valid(head));
             father->right->pair.element = element;
+            assert(is_valid(head));
         }
         BalanceRoute(father->right);
-        if(!is_valid(head))
-            int z=1;
+        if (!is_valid(head))
+            int z = 1;
     }
     assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
-    if(!is_valid(head))
-        int z=1;
+    if (!is_valid(head))
+        int z = 1;
     Node<T, Key> *node = GetNode(head, key);
     if (node == NULL)
         throw KeyDoesntExist();
@@ -696,9 +709,10 @@ int Map<T, Key>::GetRank(Key key) {
 
 
 template<class T, class Key>
-long int Map<T, Key>::SumGrades(int m) {
+long long int Map<T, Key>::SumGrades(int m) {
+    long long int sum = SumGradesNodes(head, m);
     assert(is_valid(head));
-    return SumGradesNodes(head, m);
+    return sum;
 }
 
 template<class T, class Key>
@@ -706,18 +720,17 @@ int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
     int size = 0;
     CountMinMaxLog(head, &size, bottom, top, -1);
     assert(is_valid(head));
+    if (size < 0)
+        int z = 1;
     return size;
 
 }
 
 template<class T, class Key>
-long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
+long long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     assert(is_valid(head));
-    long int sum = 0;
-    if (top.salary == 28 && bottom.salary == 22)
-        int z = 1;
+    long long int sum = 0;
     SumMinMaxLog(head, &sum, bottom, top, -1);
-    assert(is_valid(head));
     return sum;
 }
 

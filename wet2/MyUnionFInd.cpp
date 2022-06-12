@@ -79,7 +79,6 @@ int UnionFind::Find(int CompanyId)
         }
     }
     return targetCompany;
-
 }
 
 Company* UnionFind::GetCorrectCompanyPosByConst(int CompanyId)

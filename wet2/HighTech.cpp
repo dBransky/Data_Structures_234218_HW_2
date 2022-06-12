@@ -199,7 +199,7 @@ void HighTech::CompanyValue(int CompanyId) {
     {
         throw InvalidInput();
     }
-    double result = companies.GetCompanyValue(CompanyId) + 0.01 ;
+    double result = companies.GetCompanyValue(CompanyId);
     printf("CompanyValue: %.1f\n", result);
 }
 

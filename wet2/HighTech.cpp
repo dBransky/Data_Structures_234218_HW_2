@@ -254,7 +254,7 @@ void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpG
         bonus_new_employees += BumpGrade;
         totalOfGradeOfNewEmployees += amountOfNewEmployees * BumpGrade;
         for (int i = 0; i < companies.GetK(); ++i) {
-            Company *company = companies.GetCorrectCompanyPosByConst(i + 1);
+            Company *company = companies.GetRealCompany(i + 1);
             if (company->GetCompanyEmployees() == NULL)
                 continue;
             company->IncreaseTotalGradesOfNewEmployees(company->GetAmountOfNewEmployees() * BumpGrade);
@@ -262,7 +262,7 @@ void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpG
     }
     if (higherSalary > 0) {
         for (int i = 0; i < companies.GetK(); ++i) {
-            Company *company = companies.GetCorrectCompanyPosByConst(i + 1);
+            Company *company = companies.GetRealCompany(i + 1);
             if (company->GetCompanyEmployees() == NULL)
                 continue;
             company->GetCompanyEmployees()->IncreaseGradesInRange(SalaryId(lowerSalary, 0),

@@ -21,6 +21,7 @@ public:
     Company* GetCorrectCompanyPosByConst(int CompanyId);
     void Union(int acquire, int target, double Factor);
     int GetK();
+    Company* GetRealCompany(int id);
 
     // Delete In And
     void Itamar(int companyId, double value);

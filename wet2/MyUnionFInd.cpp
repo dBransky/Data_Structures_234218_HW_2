@@ -17,6 +17,11 @@ UnionFind::UnionFind(int k)
     }
 }
 
+Company* UnionFind::GetRealCompany(int id)
+{
+    return elements[id -1];
+}
+
 UnionFind::~UnionFind()
 {
     delete[] size;

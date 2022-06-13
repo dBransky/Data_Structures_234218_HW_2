@@ -93,6 +93,8 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
     delete[] (pair_list);
     companies.Union(companies.Find(AcquireCompany->GetCompanyId()), companies.Find(TargetCompany->GetCompanyId()),
                     Factor);
+
+    TargetCompany->SetCompanyEmployees(new Map<Employee*,SalaryId>(true));
     WTF();
 
 }
@@ -255,16 +257,12 @@ void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpG
         totalOfGradeOfNewEmployees += amountOfNewEmployees * BumpGrade;
         for (int i = 0; i < companies.GetK(); ++i) {
             Company *company = companies.GetRealCompany(i + 1);
-            if (company->GetCompanyEmployees() == NULL)
-                continue;
             company->IncreaseTotalGradesOfNewEmployees(company->GetAmountOfNewEmployees() * BumpGrade);
         }
     }
     if (higherSalary > 0) {
         for (int i = 0; i < companies.GetK(); ++i) {
             Company *company = companies.GetRealCompany(i + 1);
-            if (company->GetCompanyEmployees() == NULL)
-                continue;
             company->GetCompanyEmployees()->IncreaseGradesInRange(SalaryId(lowerSalary, 0),
                                                                   SalaryId(higherSalary, INT32_MAX), BumpGrade);
         }

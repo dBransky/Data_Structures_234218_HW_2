@@ -886,7 +886,9 @@ bool Map<T, Key>::check_is_valid2(int companyId) {
 
 template<class T, class Key>
 void Map<T, Key>::IncreaseGradesInRange(Key bottom, Key top, int grade_to_increase) {
-    assert(is_valid(head));
+    if (!is_valid(head))
+        int z = 1;
+
     IncreaseGradesInRange(head, bottom, top, -1, grade_to_increase);
 
 }

@@ -74,4 +74,8 @@ void Company::IncreaseAmountOfNewEmployees(int amountToAdd) { amountOfNewEmploye
 
 void Company::IncreaseTotalGradesOfNewEmployees(int amountToAdd) { totalGradesOfNewEmployees += amountToAdd; }
 
+void Company::SetCompanyEmployeesToNull() {
+
+}
+
 

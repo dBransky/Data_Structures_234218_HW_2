@@ -52,6 +52,11 @@ public:
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
+        if (rank_left==0)
+            bonus_left=0;
+        if (rank_right==0)
+            bonus_right=0;
+
         if (isCompany)
         {
                 sum_grade = grade_right + grade_left + pair.element->GetGradeValueInCompany();

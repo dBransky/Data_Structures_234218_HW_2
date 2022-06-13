@@ -481,15 +481,12 @@ private:
     void DistributeGrades(Node<T, Key> *node, Key key) {
         if (!node)
             return;
-        if (CompareKeys(node, key)) {
-            DistributeTwoLayers(node);
-        } else {
-            DistributeSingleLayer(node);
-            if (node->pair.key > key)
-                DistributeGrades(node->left, key);
-            if (node->pair.key < key)
-                DistributeGrades(node->right, key);
-        }
+        DistributeTwoLayers(node);
+        if (node->pair.key > key)
+            DistributeGrades(node->left, key);
+        if (node->pair.key < key)
+            DistributeGrades(node->right, key);
+
 
     }
 

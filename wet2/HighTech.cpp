@@ -83,8 +83,7 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
     TargetCompany->IncreaseAmountOfEmployees(-amountOfEmployees);
     AcquireCompany->IncreaseAmountOfNewEmployees(amountOfNewEmployees);
     AcquireCompany->IncreaseTotalGradesOfNewEmployees(totalGrades);
-    Pair<Employee *, SalaryId> *pair_list = AcquireCompany->GetCompanyEmployees()->GetFirstNum(
-            AcquireCompany->GetCompanyAmountOfEmployees());
+    Pair<Employee *, SalaryId> *pair_list = AcquireCompany->GetCompanyEmployees()->GetFirstNum(AcquireCompany->GetCompanyAmountOfEmployees());
     int totalAmount = AcquireCompany->GetCompanyAmountOfEmployees();
     for (int i = 0; i < totalAmount; i++) {
         pair_list[i].element->SetCompany(AcquireCompany->GetCompanyId());
@@ -93,7 +92,7 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
     delete[] (pair_list);
     companies.Union(companies.Find(AcquireCompany->GetCompanyId()), companies.Find(TargetCompany->GetCompanyId()),
                     Factor);
-
+    TargetCompany->IncreaseAmountOfNewEmployees(-amountOfNewEmployees);
     TargetCompany->SetCompanyEmployees(new Map<Employee*,SalaryId>(true));
     WTF();
 
@@ -119,9 +118,9 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         amountOfEmployeesWithSalaryBiggerThenZero++;
         company->IncreaseAmountOfEmployees(1);
         company->IncreaseAmountOfNewEmployees(-1);
-        company->IncreaseTotalGradesOfNewEmployees(-1 * employee->GetGradeValueInCompany());
+        company->IncreaseTotalGradesOfNewEmployees(-1 *( employee->GetGradeValueInCompany()));
         amountOfNewEmployees--;
-        totalOfGradeOfNewEmployees -= employee->GetGradeValueInAllEmployees();
+        totalOfGradeOfNewEmployees -= ( employee->GetGradeValueInCompany());
     }
     employee->IncreaseSalary(SalaryIncrease);
     assert(allEmployees.check_is_valid());

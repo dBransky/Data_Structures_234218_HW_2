@@ -106,15 +106,12 @@ private:
         if (m == 0)
             return 0;
         if (node->rank_right < m) {
-            if (isCompany)
-            {
+            if (isCompany) {
                 return node->grade_right + node->pair.element->GetGradeValueInCompany() +
-                               SumGradesNodes(node->left, m - node->rank_right - 1);
-            }
-            else
-            {
+                       SumGradesNodes(node->left, m - node->rank_right - 1);
+            } else {
                 return node->grade_right + node->pair.element->GetGradeValueInAllEmployees() +
-                                           SumGradesNodes(node->left, m - node->rank_right - 1);
+                       SumGradesNodes(node->left, m - node->rank_right - 1);
             }
 
         }
@@ -284,7 +281,6 @@ private:
         if (node->pair.element == NULL) {
             return false;
         }
-        assert(node->pair.element->GetCompanyId() != 0);
 
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
@@ -297,21 +293,10 @@ private:
             right_valid = (node->grade_right == node->right->sum_grade + node->rank_right * node->bonus_right);
         else
             right_valid = (node->grade_right == 0);
+        bool valid_grade =
+                (node->sum_grade == node->grade_left + node->grade_right + node->pair.element->GetGrade(isCompany)) &&
+                left_valid && right_valid;
 
-        bool valid_grade = false;
-        if (isCompany)
-        {
-            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInCompany()) && left_valid && right_valid;
-          printf("%d == %d", node->sum_grade, node->pair.element->GetCompanyId());
-            assert(valid_grade);
-
-        }
-        else
-        {
-            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInAllEmployees()) && left_valid && right_valid;
-            assert(valid_grade);
-
-        }
         return loop_free && valid_grade;
     }
 
@@ -337,16 +322,15 @@ private:
             right_valid = (node->grade_right == 0);
 
         bool valid_grade = false;
-        if (isCompany)
-        {
-            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInCompany()) &&
-                                                     left_valid && right_valid;
+        if (isCompany) {
+            valid_grade = (node->sum_grade ==
+                           node->grade_right + node->grade_left + node->pair.element->GetGradeValueInCompany()) &&
+                          left_valid && right_valid;
             assert(valid_grade);
-        }
-        else
-        {
-            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInAllEmployees()) &&
-                                                     left_valid && right_valid;
+        } else {
+            valid_grade = (node->sum_grade ==
+                           node->grade_right + node->grade_left + node->pair.element->GetGradeValueInAllEmployees()) &&
+                          left_valid && right_valid;
             assert(valid_grade);
         }
 
@@ -437,14 +421,17 @@ private:
                 node->left->left->pair.element->IncreaseGrade(node->left->bonus_left, isCompany);
                 node->left->left->bonus_left += node->left->bonus_left;
                 node->left->left->bonus_right += node->left->bonus_left;
+                node->left->left->UpdateParams(isCompany);
             }
             if (node->left->right != NULL) {
                 node->left->right->pair.element->IncreaseGrade(node->left->bonus_right, isCompany);
                 node->left->right->bonus_left += node->left->bonus_right;
                 node->left->right->bonus_right += node->left->bonus_right;
+                node->left->right->UpdateParams(isCompany);
             }
             node->left->bonus_left = 0;
             node->left->bonus_right = 0;
+            node->left->UpdateParams(isCompany);
         }
         if (node->right != NULL) {
             node->right->pair.element->IncreaseGrade(node->bonus_right, isCompany);
@@ -454,17 +441,21 @@ private:
                 node->right->left->pair.element->IncreaseGrade(node->right->bonus_left, isCompany);
                 node->right->left->bonus_left += node->right->bonus_left;
                 node->right->left->bonus_right += node->right->bonus_left;
+                node->right->left->UpdateParams(isCompany);
             }
             if (node->right->right != NULL) {
                 node->right->right->pair.element->IncreaseGrade(node->right->bonus_right, isCompany);
                 node->right->right->bonus_left += node->right->bonus_right;
                 node->right->right->bonus_right += node->right->bonus_right;
+                node->right->right->UpdateParams(isCompany);
             }
             node->right->bonus_left = 0;
             node->right->bonus_right = 0;
+            node->right->UpdateParams(isCompany);
         }
         node->bonus_right = 0;
         node->bonus_left = 0;
+        node->UpdateParams(isCompany);
     }
 
     void DistributeSingleLayer(Node<T, Key> *node) {
@@ -472,15 +463,18 @@ private:
             node->left->pair.element->IncreaseGrade(node->bonus_left, isCompany);
             node->left->bonus_left += node->bonus_left;
             node->left->bonus_right += node->bonus_left;
+            node->left->UpdateParams(isCompany);
 
         }
         if (node->right != NULL) {
             node->right->pair.element->IncreaseGrade(node->bonus_right, isCompany);
             node->right->bonus_left += node->bonus_right;
             node->right->bonus_right += node->bonus_right;
+            node->right->UpdateParams(isCompany);
         }
         node->bonus_right = 0;
         node->bonus_left = 0;
+        node->UpdateParams(isCompany);
 
     }
 
@@ -510,10 +504,8 @@ private:
     void IncreaseGradesInRange(Node<T, Key> *node, Key min_key, Key max_key, int split_dir, int inc_grade) {
         if (!node)
             return;
-        assert(is_valid(head));
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
             node->pair.element->IncreaseGrade(inc_grade, isCompany);
-             assert(is_valid(head));
             if (split_dir == -1) {
                 IncreaseGradesInRange(node->left, min_key, max_key, 0, inc_grade);
                 IncreaseGradesInRange(node->right, min_key, max_key, 1, inc_grade);
@@ -536,7 +528,6 @@ private:
         }
 
         node->UpdateParams(isCompany);
-        assert(is_valid(head));
     }
 
     void SumMinMaxLog(Node<T, Key> *node, long long int *grade_sum, Key min_key, Key max_key, int split_dir) {
@@ -544,13 +535,10 @@ private:
             return;
         DistributeSingleLayer(node);
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
-            if (isCompany)
-            {
-                  (*grade_sum) += node->pair.element->GetGradeValueInCompany();
-            }
-            else
-            {
-                  (*grade_sum) += node->pair.element->GetGradeValueInAllEmployees();
+            if (isCompany) {
+                (*grade_sum) += node->pair.element->GetGradeValueInCompany();
+            } else {
+                (*grade_sum) += node->pair.element->GetGradeValueInAllEmployees();
             }
             if (split_dir == -1) {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
@@ -565,12 +553,9 @@ private:
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
             }
         } else {
-            if (node->pair.key > max_key)
-            {
+            if (node->pair.key > max_key) {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, split_dir);
-            }
-            else
-            {
+            } else {
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, split_dir);
             }
         }
@@ -629,7 +614,7 @@ T Map<T, Key>::find(Key key) {
 template<class T, class Key>
 Map<T, Key>::Map(bool is_company) {
     head = NULL;
-    isCompany=is_company;
+    isCompany = is_company;
     amount = 0;
     assert(is_valid(head));
 }
@@ -874,8 +859,6 @@ int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
     if (!is_valid(head))
         int z = 1;
     CountMinMaxLog(head, &size, bottom, top, -1);
-    if (!is_valid(head))
-        int z = 1;
     return size;
 
 }
@@ -885,6 +868,8 @@ long long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     assert(is_valid(head));
     long long int sum = 0;
     SumMinMaxLog(head, &sum, bottom, top, -1);
+    if (!is_valid(head))
+        int z = 1;
     assert(is_valid(head));
     return sum;
 }

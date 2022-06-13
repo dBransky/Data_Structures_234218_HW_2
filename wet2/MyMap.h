@@ -422,12 +422,14 @@ private:
                 node->left->left->bonus_left += node->left->bonus_left;
                 node->left->left->bonus_right += node->left->bonus_left;
                 node->left->left->UpdateParams(isCompany);
+                DistributeSingleLayer(node->left->left);
             }
             if (node->left->right != NULL) {
                 node->left->right->pair.element->IncreaseGrade(node->left->bonus_right, isCompany);
                 node->left->right->bonus_left += node->left->bonus_right;
                 node->left->right->bonus_right += node->left->bonus_right;
                 node->left->right->UpdateParams(isCompany);
+                DistributeSingleLayer(node->left->right);
             }
             node->left->bonus_left = 0;
             node->left->bonus_right = 0;
@@ -442,12 +444,14 @@ private:
                 node->right->left->bonus_left += node->right->bonus_left;
                 node->right->left->bonus_right += node->right->bonus_left;
                 node->right->left->UpdateParams(isCompany);
+                DistributeSingleLayer(node->right->left);
             }
             if (node->right->right != NULL) {
                 node->right->right->pair.element->IncreaseGrade(node->right->bonus_right, isCompany);
                 node->right->right->bonus_left += node->right->bonus_right;
                 node->right->right->bonus_right += node->right->bonus_right;
                 node->right->right->UpdateParams(isCompany);
+                DistributeSingleLayer(node->right->right);
             }
             node->right->bonus_left = 0;
             node->right->bonus_right = 0;

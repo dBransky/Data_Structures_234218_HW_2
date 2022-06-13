@@ -10,6 +10,7 @@ private:
     int K;
     int* size;
     int* parents;
+    int* owners;
     double* salaryIncrease;
     Company** elements;
 

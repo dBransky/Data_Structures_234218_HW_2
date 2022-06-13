@@ -226,6 +226,8 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
     }
     assert(allEmployees.check_is_valid());
     double averageBumpGrade = totalSum / totalAmount;
+    if (45259.5<averageBumpGrade&&averageBumpGrade<45260)
+        int z=1;
     printf("AverageBumpGradeBetweenSalaryByGroup: %.1f\n", averageBumpGrade);
     WTF();
 

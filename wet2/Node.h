@@ -52,10 +52,8 @@ public:
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
-        if (!pair.element)
-            sum_grade = grade_left + grade_right;
-        else
-            sum_grade = grade_right + grade_left + pair.element->GetGrade();
+        sum_grade = grade_right + grade_left + pair.element->GetGrade();
+
     }
 };
 

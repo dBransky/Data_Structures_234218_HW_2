@@ -2,7 +2,7 @@
 
 
 HighTech::HighTech(int k) : amountOfNewEmployees(0), totalOfGradeOfNewEmployees(0),
-                            amountOfEmployeesWithSalaryBiggerThenZero(0), companies(k), allEmployees(), newEmployees(),
+                            amountOfEmployeesWithSalaryBiggerThenZero(0), companies(k), allEmployees(false), newEmployees(),
                             bonus_new_employees(0) {
 }
 
@@ -84,6 +84,7 @@ void HighTech::AcquireCompany(int AcquireId, int TargetId, double Factor) {
 }
 
 void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
+    assert(allEmployees.check_is_valid());
     if (EmployeeId <= 0 || SalaryIncrease <= 0) {
         throw InvalidInput();
     }
@@ -106,6 +107,7 @@ void HighTech::EmployeeSalaryIncrease(int EmployeeId, int SalaryIncrease) {
         totalOfGradeOfNewEmployees -= employee->GetGrade();
     }
     employee->IncreaseSalary(SalaryIncrease);
+    assert(allEmployees.check_is_valid());
     allEmployees.insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
     company->GetCompanyEmployees()->insert(SalaryId(employee->GetSalary(), EmployeeId), employee);
 }
@@ -161,6 +163,7 @@ void HighTech::SumOfBumpGradeBetweenTopWorkersByGroup(int CompanyId, int m) {
 }
 
 void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSalary, int higherSalary) {
+    assert(allEmployees.check_is_valid());
     if (higherSalary < 0 || lowerSalary < 0 || higherSalary < lowerSalary ||
         CompanyId > companies.GetK() || CompanyId < 0) {
         throw InvalidInput();
@@ -180,6 +183,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
         }
     }
     if (CompanyId > 0) {
+        assert(companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->check_is_valid());
         totalAmount += companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->AmountMinMax(
                 SalaryId(higherSalary, INT32_MAX), SalaryId(lowerSalary, 0));
         totalSum += companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->SumMinMax(
@@ -188,6 +192,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
         if (totalAmount == 0) {
             throw Failure();
         }
+        assert(companies.GetCorrectCompanyPosByConst(CompanyId)->GetCompanyEmployees()->check_is_valid());
     } else {
         totalAmount += allEmployees.AmountMinMax(SalaryId(higherSalary, INT32_MAX), SalaryId(lowerSalary, 0));
         totalSum += allEmployees.SumMinMax(SalaryId(higherSalary, INT32_MAX), SalaryId(lowerSalary, 0));
@@ -195,7 +200,7 @@ void HighTech::AverageBumpGradeBetweenSalaryByGroup(int CompanyId, int lowerSala
             throw Failure();
         }
     }
-
+    assert(allEmployees.check_is_valid());
     double averageBumpGrade = totalSum / totalAmount;
     printf("AverageBumpGradeBetweenSalaryByGroup: %.1f\n", averageBumpGrade);
 
@@ -214,6 +219,7 @@ void HighTech::CompanyValue(int CompanyId) {
 //Extra
 
 void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpGrade) {
+    assert(allEmployees.check_is_valid());
     if (BumpGrade <= 0 || lowerSalary > higherSalary)
         throw InvalidInput();
     if (lowerSalary == 0)
@@ -239,6 +245,7 @@ void HighTech::BumpGradeToEmployees(int lowerSalary, int higherSalary, int BumpG
                                                                   SalaryId(higherSalary, INT32_MAX), BumpGrade);
         }
     }
+    assert(allEmployees.check_is_valid());
 }
 
 

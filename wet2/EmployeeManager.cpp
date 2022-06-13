@@ -24,7 +24,7 @@ bool Employee::IsSalaryBiggerThanZero() { return (salary > 0); }
 
 Company::Company(int id) : id(id), value(id), amountOfEmployees(0), amountOfNewEmployees(0),
                            totalGradesOfNewEmployees(0) {
-    companyEmployees = new Map<Employee *, SalaryId>();
+    companyEmployees = new Map<Employee *, SalaryId>(true);
 };
 
 Company::~Company() {

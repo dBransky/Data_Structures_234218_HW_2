@@ -1,2 +1,91 @@
 Init 20
+AddEmployee 1 10 1
+AddEmployee 2 20 1
+AddEmployee 3 7 1
+BumpGradeToEmployees 0 0 10
+AverageBumpGradeBetweenSalaryByGroup  7 0 1000
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+AddEmployee 4 3 1
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+BumpGradeToEmployees 0 0 20
+AverageBumpGradeBetweenSalaryByGroup  7 0 1000
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+RemoveEmployee 1
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+EmployeeSalaryIncrease 2 10
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+BumpGradeToEmployees 0 0 50
+AverageBumpGradeBetweenSalaryByGroup  0 0 0
+BumpGradeToEmployees 0 10000 50
+AverageBumpGradeBetweenSalaryByGroup  7 0 1000
+AverageBumpGradeBetweenSalaryByGroup  20 0 1000
+AddEmployee 41 20 100
+EmployeeSalaryIncrease 41 5
+AverageBumpGradeBetweenSalaryByGroup  20 9 10
+AddEmployee 42 20 20
+EmployeeSalaryIncrease 42 100
+AddEmployee 43 20 200
+EmployeeSalaryIncrease 43 200
+AddEmployee 44 20 2000
+EmployeeSalaryIncrease 44 300
+AddEmployee 45 20 20000
+EmployeeSalaryIncrease 45 400
+AverageBumpGradeBetweenSalaryByGroup  20 300 400
+AddEmployee 46 20 5000
+EmployeeSalaryIncrease 46 124
+AddEmployee 47 20 1000
+EmployeeSalaryIncrease 47 250
+AverageBumpGradeBetweenSalaryByGroup  20 10 124
+BumpGradeToEmployees 10 120004 50
+AverageBumpGradeBetweenSalaryByGroup  20 10 124
+AverageBumpGradeBetweenSalaryByGroup  20 5 124
+AverageBumpGradeBetweenSalaryByGroup  20 5 5
+AverageBumpGradeBetweenSalaryByGroup  20 10 10
+AverageBumpGradeBetweenSalaryByGroup  20 100 100
+AverageBumpGradeBetweenSalaryByGroup  20 124 124
+AverageBumpGradeBetweenSalaryByGroup  20 200 200
+AverageBumpGradeBetweenSalaryByGroup  20 300 300
+AverageBumpGradeBetweenSalaryByGroup  20 250 250
+AverageBumpGradeBetweenSalaryByGroup  20 400 400
+AverageBumpGradeBetweenSalaryByGroup  20 0 50000
+BumpGradeToEmployees 201 120004 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 201 299 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 110 299 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+AddEmployee 100 20 500
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 0 0 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 0 0 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 124 200 100
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+BumpGradeToEmployees 0 11 2000
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+RemoveEmployee 3
+RemoveEmployee 4
+AverageBumpGradeBetweenSalaryByGroup  0 0 1255554
+AddEmployee 94 11 1000
+AverageBumpGradeBetweenSalaryByGroup  0 0 1255554
+AverageBumpGradeBetweenSalaryByGroup  20 0 1255554
+AddEmployee 98 11 100
+AddEmployee 95 11 200
+AddEmployee 96 11 300
+AddEmployee 97 11 400
+AddEmployee 99 11 500
+AddEmployee 910 11 600
+EmployeeSalaryIncrease 94 201
+EmployeeSalaryIncrease 95 200
+EmployeeSalaryIncrease 96 202
+EmployeeSalaryIncrease 97 200
+EmployeeSalaryIncrease 98 203
+EmployeeSalaryIncrease 99 200
+EmployeeSalaryIncrease 910 204
+AverageBumpGradeBetweenSalaryByGroup  11 0 1255554
+AverageBumpGradeBetweenSalaryByGroup  0 0 1255554
+AverageBumpGradeBetweenSalaryByGroup  11 199 200
+AcquireCompany 11 20 1
+AverageBumpGradeBetweenSalaryByGroup  11 199 200
 Quit

@@ -1,11 +1,13 @@
 #include "EmployeeManager.h"
 
-Employee::Employee(int id, int grade, int salary, int companyId) : id(id), grade(grade), salary(salary),
+Employee::Employee(int id, int grade, int salary, int companyId) : id(id), gradeValueInCompany(grade), gradeValueInAllEmployees(grade) , salary(salary),
                                                                    companyId(companyId) {};
 
 int Employee::GetEmployeeId() { return id; }
 
-int Employee::GetGrade() { return grade; }
+int Employee::GetGradeValueInCompany() { return gradeValueInCompany; }
+
+int Employee::GetGradeValueInAllEmployees() { return gradeValueInAllEmployees; }
 
 int Employee::GetSalary() { return salary; }
 
@@ -13,7 +15,11 @@ int Employee::GetCompanyId() { return companyId; }
 
 void Employee::SetCompany(int newCompanyId) { companyId = newCompanyId; }
 
-void Employee::IncreaseGrade(int BumpGrade) { grade = grade + BumpGrade; }
+void Employee::IncreaseGrade(int BumpGrade, bool isCompany) { if (isCompany) { gradeValueInCompany += BumpGrade; } else { gradeValueInAllEmployees += BumpGrade; } }
+
+void Employee::IncreaseGradeInCompany(int BumpGrade) { gradeValueInCompany = gradeValueInCompany + BumpGrade; }
+
+void Employee::IncreaseGradeInAllEmployees(int BumpGrade) { gradeValueInAllEmployees = gradeValueInAllEmployees + BumpGrade; }
 
 void Employee::IncreaseSalary(int SalaryIncrease) { salary = salary + SalaryIncrease; }
 
@@ -24,7 +30,7 @@ bool Employee::IsSalaryBiggerThanZero() { return (salary > 0); }
 
 Company::Company(int id) : id(id), value(id), amountOfEmployees(0), amountOfNewEmployees(0),
                            totalGradesOfNewEmployees(0) {
-    companyEmployees = new Map<Employee *, SalaryId>();
+    companyEmployees = new Map<Employee *, SalaryId>(true);
 };
 
 Company::~Company() {

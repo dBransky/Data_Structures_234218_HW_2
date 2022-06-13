@@ -36,18 +36,22 @@ class Employee
 {
 private:
     int id;
-    int grade;
+    int gradeValueInCompany;
+    int gradeValueInAllEmployees;
     int salary;
     int companyId;
 
 public:
     Employee(int id, int grade, int salary, int companyId);
     int GetEmployeeId();
-    int GetGrade();
+    int GetGradeValueInCompany();
+    int GetGradeValueInAllEmployees();
     int GetSalary();
     int GetCompanyId();
+    void IncreaseGrade(int BumpGrade, bool isCompany);
     void SetCompany(int newCompanyId);
-    void IncreaseGrade(int BumpGrade);
+    void IncreaseGradeInCompany(int BumpGrade);
+    void IncreaseGradeInAllEmployees(int BumpGrade);
     void IncreaseSalary(int SalaryIncrease);
     bool IsSalaryInRange(int minSalary, int maxSalary);
     bool IsSalaryBiggerThanZero();
@@ -80,6 +84,7 @@ public:
     int GetTotalGradeOfNewEmployees();
     void IncreaseAmountOfNewEmployees(int amountToAdd);
     void IncreaseTotalGradesOfNewEmployees(int amountToAdd);
+
 };
 
 

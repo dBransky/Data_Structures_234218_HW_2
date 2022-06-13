@@ -30,6 +30,7 @@ class KeyDoesntExist : public MapError {
 template<class T, class Key>
 class Map {
 private:
+    bool isCompany;
     Node<T, Key> *head;
 
 
@@ -82,7 +83,7 @@ private:
 
     void BalanceRoute(Node<T, Key> *updated_node) {
         while (updated_node != NULL) {
-            updated_node->UpdateParams();
+            updated_node->UpdateParams(isCompany);
             if (updated_node->balance_factor < -1 || updated_node->balance_factor > 1) {
                 if (updated_node->balance_factor == 2 && updated_node->left->balance_factor >= 0)
                     LL_Roll(updated_node);
@@ -100,15 +101,22 @@ private:
 
 
     long long int SumGradesNodes(Node<T, Key> *node, int m) {
-        if (m == 11)
-            int z = 1;
         if (!node)
             return 0;
         if (m == 0)
             return 0;
-        if (node->rank_right + 1 <= m) {
-            return node->grade_right + node->pair.element->GetGrade() +
-                   SumGradesNodes(node->left, m - node->rank_right - 1);
+        if (node->rank_right < m) {
+            if (isCompany)
+            {
+                return node->grade_right + node->pair.element->GetGradeValueInCompany() +
+                               SumGradesNodes(node->left, m - node->rank_right - 1);
+            }
+            else
+            {
+                return node->grade_right + node->pair.element->GetGradeValueInAllEmployees() +
+                                           SumGradesNodes(node->left, m - node->rank_right - 1);
+            }
+
         }
         return SumGradesNodes(node->right, m);
     }
@@ -138,11 +146,11 @@ private:
             }
             temp->father = father;
         }
-        node->UpdateParams();
+        node->UpdateParams(isCompany);
         if (temp != NULL)
-            temp->UpdateParams();
+            temp->UpdateParams(isCompany);
         if (father != NULL)
-            father->UpdateParams();
+            father->UpdateParams(isCompany);
 
     }
 
@@ -166,11 +174,11 @@ private:
             temp->father = father;
         }
 
-        node->UpdateParams();
+        node->UpdateParams(isCompany);
         if (temp != NULL)
-            temp->UpdateParams();
+            temp->UpdateParams(isCompany);
         if (father != NULL)
-            father->UpdateParams();
+            father->UpdateParams(isCompany);
 
     }
 
@@ -201,10 +209,10 @@ private:
             return NULL;
         int mid_index = (first_index + last_index) / 2;
         auto *node =
-                new Node<T, Key>(NULL, NULL, father, array[mid_index]);
+                new Node<T, Key>(NULL, NULL, father, array[mid_index], isCompany);
         node->left = TreeFromArray(node, array, first_index, mid_index - 1);
         node->right = TreeFromArray(node, array, mid_index + 1, last_index);
-        node->UpdateParams();
+        node->UpdateParams(isCompany);
         return node;
 
     }
@@ -276,27 +284,35 @@ private:
         if (node->pair.element == NULL) {
             return false;
         }
+        assert(node->pair.element->GetCompanyId() != 0);
+
         bool loop_free = (node->father != node) && is_valid(node->left) && is_valid(node->right);
         bool left_valid;
         if (node->left)
-            left_valid = (node->grade_left == node->left->sum_grade) && (node->grade_left == node->left->grade_left +
-                                                                                             node->left->grade_right +
-                                                                                             node->left->pair.element->GetGrade())&&(node->left->rank=node->rank_left);
+            left_valid = (node->grade_left == node->left->sum_grade + node->rank_left * node->bonus_left);
         else
             left_valid = (node->grade_left == 0);
         bool right_valid;
         if (node->right)
-            right_valid = (node->grade_right == node->right->sum_grade) && (node->grade_right ==
-                                                                            node->right->grade_left +
-                                                                            node->right->grade_right +
-                                                                            node->right->pair.element->GetGrade())&&((node->right->rank=node->rank_right));
+            right_valid = (node->grade_right == node->right->sum_grade + node->rank_right * node->bonus_right);
         else
             right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
-                           left_valid && right_valid;
-        return loop_free && valid_grade;
+        bool valid_grade = false;
+        if (isCompany)
+        {
+            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInCompany()) && left_valid && right_valid;
+          printf("%d == %d", node->sum_grade, node->pair.element->GetCompanyId());
+            assert(valid_grade);
 
+        }
+        else
+        {
+            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInAllEmployees()) && left_valid && right_valid;
+            assert(valid_grade);
+
+        }
+        return loop_free && valid_grade;
     }
 
     bool is_valid2(Node<T, Key> *node, int companyId) {
@@ -320,10 +336,21 @@ private:
         else
             right_valid = (node->grade_right == 0);
 
-        bool valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGrade()) &&
-                           left_valid && right_valid;
-        return loop_free && valid_grade;
+        bool valid_grade = false;
+        if (isCompany)
+        {
+            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInCompany()) &&
+                                                     left_valid && right_valid;
+            assert(valid_grade);
+        }
+        else
+        {
+            valid_grade = (node->sum_grade == node->grade_right + node->grade_left + node->pair.element->GetGradeValueInAllEmployees()) &&
+                                                     left_valid && right_valid;
+            assert(valid_grade);
+        }
 
+        return loop_free && valid_grade;
     }
 
 
@@ -401,11 +428,130 @@ private:
         }
     }
 
+    void DistributeTwoLayers(Node<T, Key> *node) {
+        if (node->left != NULL) {
+            node->left->pair.element->IncreaseGrade(node->bonus_left, isCompany);
+            node->left->bonus_left += node->bonus_left;
+            node->left->bonus_right += node->bonus_left;
+            if (node->left->left != NULL) {
+                node->left->left->pair.element->IncreaseGrade(node->left->bonus_left, isCompany);
+                node->left->left->bonus_left += node->left->bonus_left;
+                node->left->left->bonus_right += node->left->bonus_left;
+            }
+            if (node->left->right != NULL) {
+                node->left->right->pair.element->IncreaseGrade(node->left->bonus_right, isCompany);
+                node->left->right->bonus_left += node->left->bonus_right;
+                node->left->right->bonus_right += node->left->bonus_right;
+            }
+            node->left->bonus_left = 0;
+            node->left->bonus_right = 0;
+        }
+        if (node->right != NULL) {
+            node->right->pair.element->IncreaseGrade(node->bonus_right, isCompany);
+            node->right->bonus_left += node->bonus_right;
+            node->right->bonus_right += node->bonus_right;
+            if (node->right->left != NULL) {
+                node->right->left->pair.element->IncreaseGrade(node->right->bonus_left, isCompany);
+                node->right->left->bonus_left += node->right->bonus_left;
+                node->right->left->bonus_right += node->right->bonus_left;
+            }
+            if (node->right->right != NULL) {
+                node->right->right->pair.element->IncreaseGrade(node->right->bonus_right, isCompany);
+                node->right->right->bonus_left += node->right->bonus_right;
+                node->right->right->bonus_right += node->right->bonus_right;
+            }
+            node->right->bonus_left = 0;
+            node->right->bonus_right = 0;
+        }
+        node->bonus_right = 0;
+        node->bonus_left = 0;
+    }
+
+    void DistributeSingleLayer(Node<T, Key> *node) {
+        if (node->left != NULL) {
+            node->left->pair.element->IncreaseGrade(node->bonus_left, isCompany);
+            node->left->bonus_left += node->bonus_left;
+            node->left->bonus_right += node->bonus_left;
+
+        }
+        if (node->right != NULL) {
+            node->right->pair.element->IncreaseGrade(node->bonus_right, isCompany);
+            node->right->bonus_left += node->bonus_right;
+            node->right->bonus_right += node->bonus_right;
+        }
+        node->bonus_right = 0;
+        node->bonus_left = 0;
+
+    }
+
+    void DistributeGrades(Node<T, Key> *node, Key key) {
+        if (!node)
+            return;
+        if (CompareKeys(node, key)) {
+            DistributeTwoLayers(node);
+        } else {
+            DistributeSingleLayer(node);
+            if (node->pair.key > key)
+                DistributeGrades(node->left, key);
+            if (node->pair.key < key)
+                DistributeGrades(node->right, key);
+        }
+
+    }
+
+    void DistributeMapGrades(Node<T, Key> *node) {
+        if (!node)
+            return;
+        DistributeSingleLayer(node);
+        DistributeMapGrades(node->left);
+        DistributeMapGrades(node->right);
+    }
+
+    void IncreaseGradesInRange(Node<T, Key> *node, Key min_key, Key max_key, int split_dir, int inc_grade) {
+        if (!node)
+            return;
+        assert(is_valid(head));
+        if (node->pair.key <= max_key && node->pair.key >= min_key) {
+            node->pair.element->IncreaseGrade(inc_grade, isCompany);
+             assert(is_valid(head));
+            if (split_dir == -1) {
+                IncreaseGradesInRange(node->left, min_key, max_key, 0, inc_grade);
+                IncreaseGradesInRange(node->right, min_key, max_key, 1, inc_grade);
+            }
+            if (split_dir == 0) {
+                node->bonus_right += inc_grade;
+                IncreaseGradesInRange(node->left, min_key, max_key, 0, inc_grade);
+            }
+            if (split_dir == 1) {
+                node->bonus_left += inc_grade;
+                IncreaseGradesInRange(node->right, min_key, max_key, 1, inc_grade);
+            }
+        } else {
+            if (node->pair.key <= max_key) {
+                IncreaseGradesInRange(node->right, min_key, max_key, split_dir, inc_grade);
+            }
+            if (node->pair.key >= min_key) {
+                IncreaseGradesInRange(node->left, min_key, max_key, split_dir, inc_grade);
+            }
+        }
+
+        node->UpdateParams(isCompany);
+        assert(is_valid(head));
+    }
+
     void SumMinMaxLog(Node<T, Key> *node, long long int *grade_sum, Key min_key, Key max_key, int split_dir) {
         if (!node)
             return;
+        DistributeSingleLayer(node);
         if (node->pair.key <= max_key && node->pair.key >= min_key) {
-            (*grade_sum) += node->pair.element->GetGrade();
+            if (isCompany)
+            {
+                  (*grade_sum) += node->pair.element->GetGradeValueInCompany();
+            }
+            else
+            {
+                  (*grade_sum) += node->pair.element->GetGradeValueInAllEmployees();
+            }
             if (split_dir == -1) {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, 0);
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
@@ -419,19 +565,22 @@ private:
                 SumMinMaxLog(node->right, grade_sum, min_key, max_key, 1);
             }
         } else {
-            if (node->pair.key <= max_key) {
-                SumMinMaxLog(node->right, grade_sum, min_key, max_key, split_dir);
-            }
-            if (node->pair.key >= min_key) {
+            if (node->pair.key > max_key)
+            {
                 SumMinMaxLog(node->left, grade_sum, min_key, max_key, split_dir);
             }
+            else
+            {
+                SumMinMaxLog(node->right, grade_sum, min_key, max_key, split_dir);
+            }
         }
+
     }
 
 public:
     int amount;
 
-    Map();
+    Map(bool is_company);
 
     ~Map();
 
@@ -459,6 +608,8 @@ public:
 
     int AmountMinMax(Key top, Key bottom);
 
+    void IncreaseGradesInRange(Key bottom, Key top, int grade_to_increase);
+
     bool check_is_valid();
 
     bool check_is_valid2(int companyId);
@@ -476,65 +627,67 @@ T Map<T, Key>::find(Key key) {
 
 
 template<class T, class Key>
-Map<T, Key>::Map() {
+Map<T, Key>::Map(bool is_company) {
     head = NULL;
+    isCompany=is_company;
     amount = 0;
     assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::insert(Key key, T element) {
+    if (does_exist(key)) {
+        assert(is_valid(head));
+        throw KeyAlreadyExists();
+    }
     if (!is_valid(head))
         int z = 1;
-    if (does_exist(key))
-        throw KeyAlreadyExists();
     Node<T, Key> *father = GetNodeFather(head, key);
     if (father != NULL) {
         if ((father->left != NULL && father->left->pair.key == key) ||
-            (father->right != NULL && father->right->pair.key == key))
+            (father->right != NULL && father->right->pair.key == key)) {
+            assert(is_valid(head));
             throw KeyAlreadyExists();
+        }
     }
+    assert(is_valid(head));
     Pair<T, Key> pair(element, key);
     amount++;
     if (father == NULL) {
-        head = new Node<T, Key>(NULL, NULL, NULL, pair);
+        head = new Node<T, Key>(NULL, NULL, NULL, pair, isCompany);
         assert(is_valid(head));
         return;
     }
+    assert(is_valid(head));
+    DistributeGrades(head, father->pair.key);
+    assert(is_valid(head));
     if (father->pair.key > key) {
         if (father->left == NULL) {
-            father->left = new Node<T, Key>(NULL, NULL, father, pair);
-            father->UpdateParams();
+            father->left = new Node<T, Key>(NULL, NULL, father, pair, isCompany);
+            father->UpdateParams(isCompany);
         } else {
             father->left->pair.element = element;
         }
         BalanceRoute(father->left);
-        if (!is_valid(head)) {
-            int z = 1;
-            is_valid(head);
-        }
+        assert(is_valid(head));
     } else {
         assert(is_valid(head));
         if (father->right == NULL) {
             assert(is_valid(head));
-            father->right = new Node<T, Key>(NULL, NULL, father, pair);
+            father->right = new Node<T, Key>(NULL, NULL, father, pair, isCompany);
         } else {
             assert(is_valid(head));
             father->right->pair.element = element;
-            assert(is_valid(head));
         }
         BalanceRoute(father->right);
-        if (!is_valid(head))
-            int z = 1;
     }
     assert(is_valid(head));
 }
 
 template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
-    if (!is_valid(head))
-        int z = 1;
     Node<T, Key> *node = GetNode(head, key);
+    DistributeGrades(head, key);
     if (node == NULL)
         throw KeyDoesntExist();
     Node<T, Key> *temp = NULL;
@@ -575,8 +728,8 @@ void Map<T, Key>::remove(Key key) {
                 node->father->right = leftest;
             leftest->father = node->father;
         }
-        temp->UpdateParams();
-        leftest->UpdateParams();
+        temp->UpdateParams(isCompany);
+        leftest->UpdateParams(isCompany);
         node->pair.element = NULL;
         delete (node);
         BalanceRoute(temp);
@@ -613,12 +766,13 @@ void Map<T, Key>::remove(Key key) {
             }
         }
     }
-    temp->UpdateParams();
+    temp->UpdateParams(isCompany);
     node->pair.element = NULL;
     delete (node);
     BalanceRoute(temp);
     assert(is_valid(head));
 }
+
 
 template<class T, class Key>
 T Map<T, Key>::GetMaxId() {
@@ -660,12 +814,13 @@ Pair<T, Key> *Map<T, Key>::GetObjectsFromKey(Key min_key, Key max_key, int *size
 
 template<class T, class Key>
 Map<T, Key>::~Map() {
-
     FreePostOrder(head);
 }
 
 template<class T, class Key>
 void Map<T, Key>::merge(Map &map) {
+    DistributeMapGrades(head);
+    DistributeMapGrades(map.head);
     Pair<T, Key> *array1 = map.ArrayFromTree();
     Pair<T, Key> *array2 = this->ArrayFromTree();
     Pair<T, Key> *merged = MergeSortedArrays(array1, array2, map.amount, this->amount);
@@ -710,17 +865,16 @@ int Map<T, Key>::GetRank(Key key) {
 
 template<class T, class Key>
 long long int Map<T, Key>::SumGrades(int m) {
-    long long int sum = SumGradesNodes(head, m);
-    assert(is_valid(head));
-    return sum;
+    return SumGradesNodes(head, m);
 }
 
 template<class T, class Key>
 int Map<T, Key>::AmountMinMax(Key top, Key bottom) {
     int size = 0;
+    if (!is_valid(head))
+        int z = 1;
     CountMinMaxLog(head, &size, bottom, top, -1);
-    assert(is_valid(head));
-    if (size < 0)
+    if (!is_valid(head))
         int z = 1;
     return size;
 
@@ -731,6 +885,7 @@ long long int Map<T, Key>::SumMinMax(Key top, Key bottom) {
     assert(is_valid(head));
     long long int sum = 0;
     SumMinMaxLog(head, &sum, bottom, top, -1);
+    assert(is_valid(head));
     return sum;
 }
 
@@ -742,6 +897,13 @@ bool Map<T, Key>::check_is_valid() {
 template<class T, class Key>
 bool Map<T, Key>::check_is_valid2(int companyId) {
     return is_valid2(head, companyId);
+}
+
+template<class T, class Key>
+void Map<T, Key>::IncreaseGradesInRange(Key bottom, Key top, int grade_to_increase) {
+    assert(is_valid(head));
+    IncreaseGradesInRange(head, bottom, top, -1, grade_to_increase);
+
 }
 
 #endif //DATA_STRUCTURES_234218_Map_H

@@ -17,8 +17,9 @@ class HighTech
 {
 private:
     int amountOfNewEmployees;
-    int totalOfGradeOfNewEmployees;
+    double totalOfGradeOfNewEmployees;
     int amountOfEmployeesWithSalaryBiggerThenZero;
+    int bonus_new_employees;
     UnionFind companies;
     Map<Employee*, SalaryId> allEmployees;
     HashTable newEmployees;
@@ -26,6 +27,8 @@ private:
 public:
     HighTech(int k);
     ~HighTech();
+    void WTF();
+
     void AddEmployee(int EmployeeId, int CompanyId, int Grade);
     void RemoveEmployee(int EmployeeId);
     void AcquireCompany(int AcquireId, int TargetId, double Factor);

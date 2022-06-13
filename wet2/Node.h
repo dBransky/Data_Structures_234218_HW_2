@@ -24,11 +24,13 @@ public:
     long long sum_grade;
     long long grade_left;
     long long grade_right;
+    long long bonus_right;
+    long long bonus_left;
 
     Node(Node<T, Key> *left, Node<T, Key> *right, Node<T, Key> *father,
-         Pair<T, Key> pair);
+         Pair<T, Key> pair, bool isCompany);
 
-    void UpdateParams() {
+    void UpdateParams(bool isCompany) {
         if (this->left == NULL) {
             h_left = 0;
             rank_left = 0;
@@ -36,7 +38,7 @@ public:
         } else {
             h_left = std::max(left->h_left, left->h_right) + 1;
             rank_left = left->rank;
-            grade_left = left->sum_grade;
+            grade_left = left->sum_grade+rank_left*bonus_left;
         }
 
         if (this->right == NULL) {
@@ -46,26 +48,33 @@ public:
         } else {
             h_right = std::max(right->h_right, right->h_left) + 1;
             rank_right = right->rank;
-            grade_right = right->sum_grade;
+            grade_right = right->sum_grade+rank_right*bonus_right;
         }
         balance_factor = h_left - h_right;
         rank = 1 + rank_right + rank_left;
-        sum_grade = grade_right + grade_left + pair.element->GetGrade();
+        if (isCompany)
+        {
+                sum_grade = grade_right + grade_left + pair.element->GetGradeValueInCompany();
+        }
+        else
+        {
+                sum_grade = grade_right + grade_left + pair.element->GetGradeValueInAllEmployees();
+        }
+
     }
 };
 
 template<class T, class Key>
 Node<T, Key>::Node(Node<T, Key> *left, Node<T, Key> *right,
-                   Node<T, Key> *father, Pair<T, Key> pair):
+                   Node<T, Key> *father, Pair<T, Key> pair, bool isCompany):
         pair(pair), left(left), right(right), father(father) {
     h_left = 0;
     h_right = 0;
     balance_factor = 0;
-    grade_right=0;
-    grade_left=0;
-    sum_grade=0;
     rank = 1;
-    this->UpdateParams();
+    bonus_left=0;
+    bonus_right=0;
+    this->UpdateParams(isCompany);
 }
 
 

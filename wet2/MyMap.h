@@ -268,7 +268,9 @@ private:
         delete (node);
     }
 
-    bool is_valid(Node<T, Key> *node) {
+    bool is_valid(Node<T, Key> *node)
+    {
+        return true;
         if (node == NULL)
             return true;
         if (node->pair.element == NULL) {
@@ -554,7 +556,7 @@ public:
 
     int AmountMinMax(Key top, Key bottom);
 
-    void IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase);
+    void IncreaseGradesInRange( Key bottom, Key top, int grade_to_increase);
 
     bool check_is_valid();
 
@@ -628,11 +630,11 @@ template<class T, class Key>
 void Map<T, Key>::remove(Key key) {
     Node<T, Key> *node = GetNode(head, key);
     DistributeGrades(head, key);
-    if (node == NULL) {
+    if (node == NULL)
         throw KeyDoesntExist();
-        Node<T, Key> *temp = NULL;
-        amount--;
-        if (amount == 0) {
+     Node<T, Key> *temp = NULL;
+     amount--;
+     if (amount == 0) {
             delete head;
             head = NULL;
             assert(is_valid(head));
@@ -712,7 +714,7 @@ void Map<T, Key>::remove(Key key) {
         BalanceRoute(temp);
         assert(is_valid(head));
     }
-}
+
 
 template<class T, class Key>
 T Map<T, Key>::GetMaxId() {
@@ -836,8 +838,8 @@ bool Map<T, Key>::check_is_valid2(int companyId) {
 }
 
 template<class T, class Key>
-void Map<T, Key>::IncreaseGradesInRange(Key top, Key bottom, int grade_to_increase) {
-    IncreaseGradesInRange(head,top,bottom,-1,grade_to_increase);
+void Map<T, Key>::IncreaseGradesInRange(Key bottom, Key top, int grade_to_increase) {
+    IncreaseGradesInRange(head,bottom,top,-1,grade_to_increase);
 
 }
 
